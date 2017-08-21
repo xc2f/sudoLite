@@ -11,7 +11,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <img src='./logo.svg' className="App-logo" alt="logo" />
+          <img src='/images/logo.svg' className="App-logo" alt="logo" />
           <h2>9x9数独生成器</h2>
         </div>
          {/* <p className="App-intro">
