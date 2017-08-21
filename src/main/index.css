@@ -1,0 +1,46 @@
+pre {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  padding: 7px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border: 1px dashed #ddd;
+}
+
+.row {
+  display: flex;
+  direction: row;
+  justify-content: center;
+  align-content: center;
+}
+
+.row:nth-child(1) {
+  border-top: 2px solid #777;
+}
+
+.row:nth-child(3n) {
+  border-bottom: 2px solid #777;
+}
+
+.row pre:first-child {
+  border-left: 2px solid #777;
+}
+
+.row pre:nth-child(3n) {
+  border-right: 2px solid #777;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrap button {
+  margin: 10px;
+}
+
+.container {
+  margin-top: 17px;
+}

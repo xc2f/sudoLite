@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
+import './index.css'
 
 class Main extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      array: null,
+      btnDisabled: false,
+      shade: false
+    }
     this.avalibleIdx = this.avalibleIdx.bind(this);
+    this.generateSudoku = this.generateSudoku.bind(this);
+    this.generateSudokuSuccess = false
   }
 
   // 每行分为3块，idx在三行内不处于同一块
@@ -41,9 +49,7 @@ class Main extends Component {
 
   }
 
-
-  componentWillMount() {
-    
+  generateSudoku(){
     let array = new Array(9)
     for(let i=0; i<9; i++){
       array[i] = new Array(9)
@@ -61,25 +67,71 @@ class Main extends Component {
             idxInList.push(avalibIdx)
           }
         }
-        if (idxInList.length === 9 || new Date().getTime() - time > 5000){
+        if (idxInList.length === 9){
           notComplete = false
+        } else if (new Date().getTime() - time > 1000){
+          return
         }
       }
-
-      idxInList.map((item, idx) => {
-        array[idx][item] = j+1
-      })
-
+      // 要return，不map
+      for(let n=0; n<idxInList.length; n++){
+        array[n][idxInList[n]] = j+1
+        if(j===8 && n===8){
+          this.generateSudokuSuccess = true
+          return array
+        }
+      }
     }
+  }
 
-    console.log(array)
+  handleGenerateSudoku(){
+    if(this.state.btnDisabled){
+      return
+    }
+    this.generateSudokuSuccess = false
+    this.setState({
+      btnDisabled: true,
+      array: null
+    })
+    let result = null
+    while(!this.generateSudokuSuccess){
+      result = this.generateSudoku()
+      // console.log(result)
+    }   
+    this.setState({
+      btnDisabled: false,
+      array: result
+    })
+  }
+
+  componentWillMount() {
+    this.handleGenerateSudoku()
   }
   
   
   render() {
     return (
-      <div>
-        
+      <div className="container">
+      {this.state.array === null ?
+        <div>数独生成中</div>
+        :
+        <div className="wrap">
+          {this.state.array.map((item, idx) => (
+            <div className="row" key={`row-${idx}`}>
+              {/* 遮挡1/3 */}
+              {item.map((i, d) => (
+                <pre key={`box-${d}`}>{ this.state.shade ? (Math.random()>=.3 ? i : '') : i}</pre>
+              ))}
+            </div>
+          ))}
+          <div className="btngroup">
+            <button onClick={this.handleGenerateSudoku.bind(this)} disabled={this.state.btnDisabled}>重新生成</button>
+            <button
+              onClick={ ()=>this.setState({ shade: !this.state.shade}) }
+            >{this.state.shade ? '取消遮挡' : '随机遮挡'}</button>
+          </div>
+        </div>
+      }
       </div>
     );
   }
