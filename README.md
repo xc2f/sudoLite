@@ -1,7 +1,7 @@
 # 9x9数独生成器
 > By JavaScript
 
-![https://github.com/Pysics/sudoku](./public/images/show.gif)
+![https://github.com/Pysics/sudoku](./public/images/case.gif)
 
 ## Features
 - Less than 50 lines codes
