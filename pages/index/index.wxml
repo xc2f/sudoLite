@@ -1,0 +1,30 @@
+<view class="container">
+  <view class='loading' wx:if="{{!generateOk}}">
+    <import src="/pages/components/loading/loading" />
+    <template is="loading" />
+  </view>
+  <view class="title">9x9数独生成器</view>
+  <view class="wrap">
+    <view wx:for="{{array}}" wx:key="" class="row">
+      <block wx:key="" wx:for="{{item}}">
+        <view class="box">
+          <!-- <wxs module="shade">
+            module.exports = {
+              result : Math.random(),
+            }
+          </wxs> -->
+          <!-- {{shade.result>.3 ? item : ''}} -->
+          {{item}}
+        </view>
+      </block>
+    </view>
+  </view>
+  <view>
+
+  </view>
+
+  <view wx:if="{{dataOk}}" class="btnGroup">
+    <button class="generate" disabled="{{btnDisabled}}" bindtap="handleGenerateSudoku">重新生成</button>
+    <button class="{{shade ? 'cancleShade' : 'shade'}}" bindtap="toShade">{{shade ? '取消遮挡' : '随机遮挡'}}</button>
+  </view>
+</view>

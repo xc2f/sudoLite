@@ -1,0 +1,15 @@
+<template name="loading">
+  <view class="loading" style="position: absolute; top:0; right: 0; bottom: 0; left: 0; background: rgba(0, 0, 0, .2); width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 99999">
+  <view class="sk-cube-grid">
+    <view class="sk-cube sk-cube1"></view>
+    <view class="sk-cube sk-cube2"></view>
+    <view class="sk-cube sk-cube3"></view>
+    <view class="sk-cube sk-cube4"></view>
+    <view class="sk-cube sk-cube5"></view>
+    <view class="sk-cube sk-cube6"></view>
+    <view class="sk-cube sk-cube7"></view>
+    <view class="sk-cube sk-cube8"></view>
+    <view class="sk-cube sk-cube9"></view>
+  </view>
+  </view>
+</template>
