@@ -6,7 +6,7 @@ var app = getApp()
 Page({
   data: {
     // 数组
-    array: null,
+    array: [],
 
     // 生成按钮禁用状态
     btnDisabled: false,
@@ -25,10 +25,25 @@ Page({
   // 数组遮挡还原用
   fullArray: null,
 
-  // 数组重新生成时避免空屏
-  copyArray: null,
+
+  initArray(type){
+    let array = new Array(9)
+    for (let i = 0; i < 9; i++) {
+      array[i] = new Array(9)
+      for (let j = 0; j < 9; j++) {
+        array[i][j] = undefined
+      }
+    }
+    if(type === 'init'){
+      this.setData({
+        array: array
+      })
+    }
+    return array
+  },
 
   onLoad: function () {
+    this.initArray('init')
     this.handleGenerateSudoku()
   },
 
@@ -39,17 +54,13 @@ Page({
     this.generateSudokuSuccess = false
     this.setData({
       btnDisabled: true,
-      array: null
     })
     let result = null
     while (!this.generateSudokuSuccess) {
       result = this.generateSudoku()
-      // console.log(result)
     }
 
-    this.copyArray = result
-
-    if(this.data.shade){
+    if (this.data.shade) {
       this.toShade(result)
       this.setData({
         btnDisabled: false,
@@ -68,13 +79,10 @@ Page({
 
   generateSudoku() {
     this.setData({
-      array: this.copyArray,
       generateOk: false
     })
-    let array = new Array(9)
-    for (let i = 0; i < 9; i++) {
-      array[i] = new Array(9)
-    }
+    // 只取值不刷新UI, 避免box为空
+    let array = this.initArray()
     let time = new Date().getTime()
     for (let j = 0; j < 9; j++) {
       let idxInList = []
@@ -132,8 +140,8 @@ Page({
     return resultList[Math.floor(Math.random() * resultList.length)]
   },
 
-  toShade(newArray){
-    if(newArray instanceof Array){
+  toShade(newArray) {
+    if (newArray instanceof Array) {
       let templist = newArray
       this.fullArray = objDeepCopy(templist)
       templist.map(itemRow => (
@@ -165,7 +173,6 @@ Page({
         })
       }
     }
-    this.copyArray = this.data.array
   },
 
 })

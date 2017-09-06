@@ -8,6 +8,9 @@
   padding: 7px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   border: 1px dashed #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .row {

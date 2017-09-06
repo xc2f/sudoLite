@@ -22,7 +22,8 @@ button:after {
 }
 
 .sk-cube-grid .sk-cube {
-  background: RGB(47, 117, 242)!important;
+  /* background: RGB(47, 117, 242)!important; */
+  background: rgb(255, 167, 61)!important;
   width: 33%;
   height: 33%;
   background-color: #333;

@@ -1,5 +1,5 @@
 <view class="container">
-  <view class='loading' wx:if="{{!generateOk}}">
+  <view class='loading' wx:if="{{generateOk}}">
     <import src="/pages/components/loading/loading" />
     <template is="loading" />
   </view>
@@ -8,13 +8,7 @@
     <view wx:for="{{array}}" wx:key="" class="row">
       <block wx:key="" wx:for="{{item}}">
         <view class="box">
-          <!-- <wxs module="shade">
-            module.exports = {
-              result : Math.random(),
-            }
-          </wxs> -->
-          <!-- {{shade.result>.3 ? item : ''}} -->
-          {{item}}
+          {{item ? item : ''}}
         </view>
       </block>
     </view>
