@@ -1,5 +1,5 @@
 <view class="container">
-  <view class='loading' wx:if="{{generateOk}}">
+  <view class='loading' wx:if="{{!generateOk}}">
     <import src="/pages/components/loading/loading" />
     <template is="loading" />
   </view>
@@ -7,8 +7,10 @@
   <view class="wrap">
     <view wx:for="{{array}}" wx:key="" class="row">
       <block wx:key="" wx:for="{{item}}">
-        <view class="box">
-          {{item ? item : ''}}
+        <view class="box" data-value='{{item}}' bindtap='tapBox'>
+          <!-- <text wx:if='{{item}}'>{{item}}</text>
+          <input wx:else /> -->
+            {{item ? item : ''}}  
         </view>
       </block>
     </view>

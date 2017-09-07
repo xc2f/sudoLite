@@ -26,7 +26,7 @@ Page({
   fullArray: null,
 
 
-  initArray(type){
+  initArray(type) {
     let array = new Array(9)
     for (let i = 0; i < 9; i++) {
       array[i] = new Array(9)
@@ -34,7 +34,7 @@ Page({
         array[i][j] = undefined
       }
     }
-    if(type === 'init'){
+    if (type === 'init') {
       this.setData({
         array: array
       })
@@ -141,8 +141,10 @@ Page({
   },
 
   toShade(newArray) {
-    if (newArray instanceof Array) {
-      let templist = newArray
+    // 点击事件默认传递一个事件对象，当参数是数组时表示当前为遮挡状态
+    let isArray = newArray instanceof Array
+    if (isArray || !this.data.shade) {
+      let templist = isArray ? newArray : this.data.array
       this.fullArray = objDeepCopy(templist)
       templist.map(itemRow => (
         itemRow.map((item, idx) => {
@@ -154,25 +156,19 @@ Page({
         shade: true
       })
     } else {
-      if (this.data.shade) {
-        this.setData({
-          array: this.fullArray,
-          shade: false
-        })
-      } else {
-        let templist = this.data.array
-        this.fullArray = objDeepCopy(templist)
-        templist.map(itemRow => (
-          itemRow.map((item, idx) => {
-            itemRow[idx] = (Math.random() >= 0.3) ? item : ''
-          })
-        ))
-        this.setData({
-          array: templist,
-          shade: true
-        })
-      }
+      this.setData({
+        array: this.fullArray,
+        shade: false
+      })
     }
   },
+
+  tapBox(e){
+    let value = e.currentTarget.dataset.value
+    if(value){
+      return
+    }
+    console.log(value)
+  }
 
 })
