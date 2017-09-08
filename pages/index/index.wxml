@@ -5,12 +5,13 @@
   </view>
   <view class="title">9x9数独生成器</view>
   <view class="wrap">
-    <view wx:for="{{array}}" wx:key="" class="row">
+    <view wx:for="{{data}}" wx:key="" class="row">
       <block wx:key="" wx:for="{{item}}">
-        <view class="box" data-value='{{item}}' bindtap='tapBox'>
+        <!-- rcl: row cross line 行与列光标香蕉 -->
+        <view class="{{item.className}}" data-value='{{item.value}}' data-x="{{item.x}}" data-y="{{item.y}}" data-show="{{item.show}}" bindtap='tapBox' style="background: {{item.rcl ? 'red' : '#567'}};">
           <!-- <text wx:if='{{item}}'>{{item}}</text>
           <input wx:else /> -->
-            {{item ? item : ''}}  
+          <text class="{{item.rcl ? 'rcl' : ''}}"> {{item.show ? item.value : (item.fill || '')}}</text>
         </view>
       </block>
     </view>
@@ -21,6 +22,13 @@
 
   <view wx:if="{{dataOk}}" class="btnGroup">
     <button class="generate" disabled="{{btnDisabled}}" bindtap="handleGenerateSudoku">重新生成</button>
-    <button class="{{shade ? 'cancleShade' : 'shade'}}" bindtap="toShade">{{shade ? '取消遮挡' : '随机遮挡'}}</button>
+    <button class="{{shade ? 'cancleShade' : 'shade'}}" bindtap="toggleShade">{{shade ? '取消遮挡' : '随机遮挡'}}</button>
   </view>
+</view>
+
+<!-- 浮层 -->
+<view class='panel' style="top: {{panelPosition.dy}}px; left: {{panelPosition.dx}}px;" animation="{{panelShowAnimation}}">
+  <block wx:for="{{[1,2,3,4,5,6,7,8,9]}}">
+    <view bindtap='panelTap' data-value="{{item}}">{{item}}</view>
+  </block>
 </view>

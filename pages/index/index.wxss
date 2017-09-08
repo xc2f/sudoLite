@@ -1,16 +1,33 @@
 .container {
   /* height: 100vh; */
 }
+
 .box {
   width: 17px;
   height: 17px;
   margin: 0;
   padding: 7px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  border: 1px dashed #ddd;
+  border-right: 1px dashed #eee;
+  border-bottom: 1px dashed #eee;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #eee;
+  background: #567;
+  border-radius: 2px;
+}
+.box.blank {
+  color: #f0ad4e;
+}
+.box > text {
+  /* flex: 1;
+  padding: 7px; */
+  /* width: 100%;
+  height: 100%; */
+}
+.box > .rcl {
+  background: rgba(255, 255, 255, .3)
 }
 
 .row {
@@ -21,19 +38,23 @@
 }
 
 .row:nth-child(1) {
-  border-top: 2px solid #777;
+  border-top: 2px solid #fff;
 }
 
 .row:nth-child(3n) {
-  border-bottom: 2px solid #777;
+  border-bottom: 2px solid #fff;
 }
 
 .row .box:first-child {
-  border-left: 2px solid #777;
+  border-left: 2px solid #fff;
 }
 
 .row .box:nth-child(3n) {
-  border-right: 2px solid #777;
+  border-right: 2px solid #fff;
+}
+
+.wrap .row:nth-child(3n) .box {
+  border-bottom: none;
 }
 
 .wrap {
@@ -61,13 +82,15 @@
   width: 100%;
   margin: 10px;
 }
- .btnGroup button {
-   color: #fff;
- }
+
+.btnGroup button {
+  color: #fff;
+}
 
 .btnGroup .generate {
   background: #5cb85c;
 }
+
 .btnGroup .generate.button-hover {
   background: #449d44;
 }
@@ -75,6 +98,7 @@
 .btnGroup .shade {
   background: #5bc0de;
 }
+
 .btnGroup .shade.button-hover {
   background: #449d44;
 }
@@ -82,6 +106,27 @@
 .btnGroup .cancleShade {
   background: #f0ad4e;
 }
+
 .btnGroup .cancleShade.button-hover {
   background: #ec971f;
+}
+
+.panel {
+  width: 102px;
+  height: 102px;
+  /* border: 1px solid red; */
+  text-align: center;
+  position: absolute;
+  box-shadow: 0 0 7px rgba(255, 255, 255, .3);
+  transform: scale(0)
+}
+
+.panel > view {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  /* border: 1px solid blue; */
+  background: rgba(255, 255, 255, .3);
+  float: left;
+  margin: 2px;
 }

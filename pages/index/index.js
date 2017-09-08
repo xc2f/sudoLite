@@ -6,7 +6,7 @@ var app = getApp()
 Page({
   data: {
     // 数组
-    array: [],
+    data: [],
 
     // 生成按钮禁用状态
     btnDisabled: false,
@@ -18,12 +18,24 @@ Page({
     shade: false,
 
     // 初次渲染完成前时不显示按钮
-    dataOk: false
+    dataOk: false,
+
+    // panel位置
+    panelPosition: {
+      dx: -102,
+      dy: -102
+    },
+    panelShow: false,
+    panelShowAnimation: {},
+
+    boxPosition: {
+      x: 0,
+      y: 0
+    },
+
+    deviceInfo: null
   },
   generateSudokuSuccess: false,
-
-  // 数组遮挡还原用
-  fullArray: null,
 
 
   initArray(type) {
@@ -36,7 +48,7 @@ Page({
     }
     if (type === 'init') {
       this.setData({
-        array: array
+        data: array
       })
     }
     return array
@@ -45,6 +57,9 @@ Page({
   onLoad: function () {
     this.initArray('init')
     this.handleGenerateSudoku()
+    this.setData({
+      deviceInfo: app.globalData.deviceInfo
+    })
   },
 
   handleGenerateSudoku() {
@@ -60,8 +75,20 @@ Page({
       result = this.generateSudoku()
     }
 
+    result.map((rowItem, rowIdx) => {
+      rowItem.map((item, idx) => {
+        result[rowIdx][idx] = {
+          value: item,
+          show: true,
+          className: 'box',
+          x: idx,
+          y: rowIdx
+        }
+      })
+    })
+
     if (this.data.shade) {
-      this.toShade(result)
+      this.toggleShade(result)
       this.setData({
         btnDisabled: false,
         generateOk: true,
@@ -70,7 +97,7 @@ Page({
     } else {
       this.setData({
         btnDisabled: false,
-        array: result,
+        data: result,
         generateOk: true,
         dataOk: true
       })
@@ -140,35 +167,91 @@ Page({
     return resultList[Math.floor(Math.random() * resultList.length)]
   },
 
-  toShade(newArray) {
+  toggleShade(newData) {
     // 点击事件默认传递一个事件对象，当参数是数组时表示当前为遮挡状态
-    let isArray = newArray instanceof Array
-    if (isArray || !this.data.shade) {
-      let templist = isArray ? newArray : this.data.array
-      this.fullArray = objDeepCopy(templist)
-      templist.map(itemRow => (
-        itemRow.map((item, idx) => {
-          itemRow[idx] = (Math.random() >= 0.3) ? item : ''
-        })
-      ))
-      this.setData({
-        array: templist,
-        shade: true
+    let isArray = newData instanceof Array
+    let templist = isArray ? newData : this.data.data
+    templist.map(itemRow => (
+      itemRow.map((item, idx) => {
+        let result = isArray ? ((Math.random() >= 0.3) ? true : false) : (this.data.shade ? true : ((Math.random() >= 0.3) ? true : false))
+        itemRow[idx].show = result ? true : false,
+        itemRow[idx].className = result ? 'box' : 'box blank'
       })
-    } else {
-      this.setData({
-        array: this.fullArray,
-        shade: false
-      })
-    }
+    ))
+    this.setData({
+      data: templist,
+      shade: isArray ? true : !this.data.shade
+    })
   },
 
-  tapBox(e){
-    let value = e.currentTarget.dataset.value
-    if(value){
+  basicAnimation(duration, delay) {
+    let animation = wx.createAnimation({
+      duration: duration || 500,
+      timingFunction: "ease",
+      delay: delay || 0
+    });
+    return animation;
+  },
+
+  tapBox(e) {
+    console.log(e)
+    let show = e.currentTarget.dataset.show
+    if (show) {
+      this.setData({
+        panelShowAnimation: this.basicAnimation(200).scale(0).step().export()
+      })
       return
     }
-    console.log(value)
+
+    // panel浮层位置
+    let panelPosition = this.data.panelPosition
+    // panel的一半是51
+    panelPosition.dx = e.detail.x - 51
+    panelPosition.dy = e.detail.y - 51
+    
+    let screenWidth = this.data.deviceInfo.screenWidth
+    // 触摸点位置加半个panel超出屏幕宽度
+    if (e.detail.x + 51 >= screenWidth){
+      panelPosition.dx = e.detail.x - 102
+    } else if (panelPosition.dx <= 0){
+      // panel左边超出屏幕边界
+      panelPosition.dx = e.detail.x
+    }
+
+    // 激活的哪个box
+    let boxPosition = this.data.boxPosition
+    boxPosition.x = e.currentTarget.dataset.x
+    boxPosition.y = e.currentTarget.dataset.y
+
+    let data = this.data.data
+    data.map((rowItem, rowIdx) => {
+      rowItem.map((item, idx) =>{
+        item.rcl = false
+        if (rowIdx === boxPosition.y){
+          item.rcl = true
+        }
+        if(idx === boxPosition.x){
+          item.rcl = true
+        }
+      })
+    })
+    this.setData({
+      panelPosition: panelPosition,
+      panelShowAnimation: this.basicAnimation(200).scale(1).step().export(),
+      boxPosition: boxPosition,
+      data: data
+    })
+  },
+
+  panelTap(e){
+    let value = e.currentTarget.dataset.value
+    let boxPosition = this.data.boxPosition
+    let data = this.data.data
+    data[boxPosition.y][boxPosition.x].fill = value
+    this.setData({
+      panelShowAnimation: this.basicAnimation(200).scale(0).step().export(),
+      data: data
+    })
   }
 
 })
