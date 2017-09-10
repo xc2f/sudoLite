@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container" bindtap="hidePanel">
   <view class='loading' wx:if="{{!generateOk}}">
     <import src="/pages/components/loading/loading" />
     <template is="loading" />
@@ -8,10 +8,11 @@
     <view wx:for="{{data}}" wx:key="" class="row">
       <block wx:key="" wx:for="{{item}}">
         <!-- rcl: row cross line 行与列光标香蕉 -->
-        <view class="{{item.className}}" data-value='{{item.value}}' data-x="{{item.x}}" data-y="{{item.y}}" data-show="{{item.show}}" bindtap='tapBox' style="background: {{item.rcl ? 'red' : '#567'}};">
+        <view class="{{item.show ? (item.duplicate[0] ? 'box duplicate' : 'box show') : 'box blank'}}" data-value='{{item.value}}' data-x="{{item.x}}" data-y="{{item.y}}" data-show="{{item.show}}" catchtap='tapBox' style="width: {{boxSize}}px; height: {{boxSize}}px;">
           <!-- <text wx:if='{{item}}'>{{item}}</text>
           <input wx:else /> -->
-          <text class="{{item.rcl ? 'rcl' : ''}}"> {{item.show ? item.value : (item.fill || '')}}</text>
+          <view class="{{item.rcl ? 'rcl' : ''}}"></view>
+          <text class="{{item.showSame ? 'showSame' : ''}}"> {{item.show ? item.value : (item.fill || '')}}</text>
         </view>
       </block>
     </view>
@@ -21,14 +22,14 @@
   </view>
 
   <view wx:if="{{dataOk}}" class="btnGroup">
-    <button class="generate" disabled="{{btnDisabled}}" bindtap="handleGenerateSudoku">重新生成</button>
-    <button class="{{shade ? 'cancleShade' : 'shade'}}" bindtap="toggleShade">{{shade ? '取消遮挡' : '随机遮挡'}}</button>
+    <button class="generate" disabled="{{btnDisabled}}" catchtap="handleGenerateSudoku">重新生成</button>
+    <button class="{{shade ? 'cancleShade' : 'shade'}}" catchtap="toggleShade">{{shade ? '查看答案' : '重新开始'}}</button>
   </view>
 </view>
 
 <!-- 浮层 -->
 <view class='panel' style="top: {{panelPosition.dy}}px; left: {{panelPosition.dx}}px;" animation="{{panelShowAnimation}}">
-  <block wx:for="{{[1,2,3,4,5,6,7,8,9]}}">
-    <view bindtap='panelTap' data-value="{{item}}">{{item}}</view>
+  <block wx:for="{{panelData}}" wx:key>
+    <view catchtap='panelTap' data-value="{{item}}">{{item}}</view>
   </block>
 </view>

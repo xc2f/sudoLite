@@ -8,6 +8,8 @@ Page({
     // 数组
     data: [],
 
+    boxSize: 17,
+
     // 生成按钮禁用状态
     btnDisabled: false,
 
@@ -15,7 +17,7 @@ Page({
     generateOk: false,
 
     // 遮挡控制
-    shade: false,
+    shade: true,
 
     // 初次渲染完成前时不显示按钮
     dataOk: false,
@@ -25,18 +27,21 @@ Page({
       dx: -102,
       dy: -102
     },
-    panelShow: false,
     panelShowAnimation: {},
 
-    boxPosition: {
+    boxCoords: {
       x: 0,
       y: 0
     },
 
-    deviceInfo: null
+    // pannel定位用
+    deviceInfo: null,
+    panelData: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
   },
   generateSudokuSuccess: false,
-
+  // 回退
+  history: [],
 
   initArray(type) {
     let array = new Array(9)
@@ -55,11 +60,13 @@ Page({
   },
 
   onLoad: function () {
+    let deviceInfo = app.globalData.deviceInfo
+    this.setData({
+      deviceInfo: deviceInfo,
+      boxSize: (deviceInfo.screenWidth - 20) / 9
+    })
     this.initArray('init')
     this.handleGenerateSudoku()
-    this.setData({
-      deviceInfo: app.globalData.deviceInfo
-    })
   },
 
   handleGenerateSudoku() {
@@ -80,7 +87,7 @@ Page({
         result[rowIdx][idx] = {
           value: item,
           show: true,
-          className: 'box',
+          // className: 'box',
           x: idx,
           y: rowIdx
         }
@@ -174,14 +181,18 @@ Page({
     templist.map(itemRow => (
       itemRow.map((item, idx) => {
         let result = isArray ? ((Math.random() >= 0.3) ? true : false) : (this.data.shade ? true : ((Math.random() >= 0.3) ? true : false))
-        itemRow[idx].show = result ? true : false,
-        itemRow[idx].className = result ? 'box' : 'box blank'
+        itemRow[idx].show = result ? true : false
+        // itemRow[idx].className = result ? 'box' : 'box blank'
+        item.duplicate = []
+        item.fill = ''
+        item.rcl = false
       })
     ))
     this.setData({
       data: templist,
-      shade: isArray ? true : !this.data.shade
+      shade: isArray ? true : !this.data.shade,
     })
+    this.togglePanel(false)
   },
 
   basicAnimation(duration, delay) {
@@ -193,65 +204,206 @@ Page({
     return animation;
   },
 
+  togglePanel(toShow) {
+    let scale = 0
+    if (toShow) {
+      scale = 1
+    }
+    this.setData({
+      panelShowAnimation: this.basicAnimation(200).scale(scale).step().export()
+    })
+  },
+
   tapBox(e) {
-    console.log(e)
     let show = e.currentTarget.dataset.show
+    let value = e.currentTarget.dataset.value
+
     if (show) {
-      this.setData({
-        panelShowAnimation: this.basicAnimation(200).scale(0).step().export()
-      })
+      this.togglePanel(false)
+      this.showSame(true, value)
       return
     }
+    this.showSame(false)
 
     // panel浮层位置
     let panelPosition = this.data.panelPosition
     // panel的一半是51
     panelPosition.dx = e.detail.x - 51
     panelPosition.dy = e.detail.y - 51
-    
+
     let screenWidth = this.data.deviceInfo.screenWidth
     // 触摸点位置加半个panel超出屏幕宽度
-    if (e.detail.x + 51 >= screenWidth){
+    if (e.detail.x + 51 >= screenWidth) {
       panelPosition.dx = e.detail.x - 102
-    } else if (panelPosition.dx <= 0){
+    } else if (panelPosition.dx <= 0) {
       // panel左边超出屏幕边界
       panelPosition.dx = e.detail.x
     }
 
     // 激活的哪个box
-    let boxPosition = this.data.boxPosition
-    boxPosition.x = e.currentTarget.dataset.x
-    boxPosition.y = e.currentTarget.dataset.y
-
+    let boxCoords = this.data.boxCoords
+    boxCoords.x = e.currentTarget.dataset.x
+    boxCoords.y = e.currentTarget.dataset.y
     let data = this.data.data
     data.map((rowItem, rowIdx) => {
-      rowItem.map((item, idx) =>{
+      rowItem.map((item, idx) => {
         item.rcl = false
-        if (rowIdx === boxPosition.y){
-          item.rcl = true
-        }
-        if(idx === boxPosition.x){
+        if (rowIdx === boxCoords.y || idx === boxCoords.x) {
           item.rcl = true
         }
       })
     })
+    this.about9Box(boxCoords.x, boxCoords.y).map(item => {
+      data[item.y][item.x].rcl = true
+    })
+
+    // panel数字
+    let panelData = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    if (data[boxCoords.y][boxCoords.x].fill) {
+      let idx = panelData.indexOf(data[boxCoords.y][boxCoords.x].fill)
+      panelData.splice(idx, 1)
+      // 始終讓x居中
+      panelData.splice(4, 0, 'x')
+    }
+
     this.setData({
       panelPosition: panelPosition,
-      panelShowAnimation: this.basicAnimation(200).scale(1).step().export(),
-      boxPosition: boxPosition,
+      boxCoords: boxCoords,
+      data: data,
+      panelData: panelData
+    })
+    this.togglePanel(true)
+  },
+
+  countDuplication(value, item, target) {
+    let boxCoords = this.data.boxCoords
+    let targetPosition = parseInt(boxCoords.y + '' + boxCoords.x)
+    let findTargetPositionInList = item.duplicate.lastIndexOf(targetPosition)
+    if (value === 'x') {
+      if (item.value === target.fill) {
+        item.duplicate.splice(findTargetPositionInList, 1)
+      }
+    } else {
+      if (item.value === value) {
+        item.duplicate.push(targetPosition)
+      } else {
+        if (findTargetPositionInList >= 0) {
+          item.duplicate.splice(findTargetPositionInList, 1)
+        }
+      }
+    }
+    console.log(item)
+  },
+
+  panelTap(e) {
+    let value = e.currentTarget.dataset.value
+    let boxCoords = this.data.boxCoords
+    let data = this.data.data
+
+    // 行和列
+    data.map((rowItem, rowIdx) => {
+      rowItem.map((item, idx) => {
+        // 只找show的
+        if (item.show) {
+          if ((rowIdx === boxCoords.y || idx === boxCoords.x) && (!(rowIdx === boxCoords.y && idx === boxCoords.x))) {
+            this.countDuplication(value, item, data[boxCoords.y][boxCoords.x])
+          }
+        }
+      })
+    })
+
+    // 九宫格
+    this.about9Box(boxCoords.x, boxCoords.y).map(item => {
+      if (boxCoords.x !== item.x || boxCoords.y !== item.y) {
+        let box = data[item.y][item.x]
+        if (box.show) {
+          // 排除在同行或同列的，上一步已经处理过
+          if (item.y !== boxCoords.y && item.x !== boxCoords.x) {
+            this.countDuplication(value, box, data[boxCoords.y][boxCoords.x])
+          }
+        }
+      }
+    })
+
+    data[boxCoords.y][boxCoords.x].fill = (value === 'x') ? '' : value
+
+    this.setData({
+      data: data
+    })
+    this.togglePanel(false)
+
+    // 最多存100条记录
+    if (this.history.length === 100) {
+      this.history.pop()
+    }
+
+    this.history.push({
+      boxCoords: boxCoords,
+      data: data[boxCoords.y][boxCoords.x],
+      panelValue: value
+    })
+
+  },
+
+  about9Box(x, y) {
+    let range = {}
+    let list = []
+    if (x % 3 === 0) {
+      // x在0, 3, 6列
+      range.x = [x, x + 1, x + 2]
+    } else if (x % 3 === 1) {
+      // x在1，4，7列
+      range.x = [x - 1, x, x + 1]
+    } else {
+      // x在2，5，8列
+      range.x = [x - 2, x - 1, x]
+    }
+    if (y % 3 === 0) {
+      // y在0, 3, 6行
+      range.y = [y, y + 1, y + 2]
+    } else if (y % 3 === 1) {
+      // y在1，4，7行
+      range.y = [y - 1, y, y + 1]
+    } else {
+      // y在2，5，8行
+      range.y = [y - 2, y - 1, y]
+    }
+    range.y.map(y => {
+      range.x.map(x => {
+        list.push({
+          x: x,
+          y: y
+        })
+      })
+    })
+    // 返回当前九宫格坐标
+    return list
+  },
+
+  hidePanel() {
+    this.togglePanel(false)
+  },
+
+  showSame(showSame, value) {
+    let data = this.data.data
+    data.map((rowItem, rowIdx) => {
+      rowItem.map(item => {
+        if (item.show) {
+          if (showSame) {
+            if (item.value === value) {
+              item.showSame = true
+            } else {
+              delete item.showSame
+            }
+          } else {
+            delete item.showSame
+          }
+        }
+      })
+    })
+    this.setData({
       data: data
     })
   },
-
-  panelTap(e){
-    let value = e.currentTarget.dataset.value
-    let boxPosition = this.data.boxPosition
-    let data = this.data.data
-    data[boxPosition.y][boxPosition.x].fill = value
-    this.setData({
-      panelShowAnimation: this.basicAnimation(200).scale(0).step().export(),
-      data: data
-    })
-  }
 
 })
