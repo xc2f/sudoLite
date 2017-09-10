@@ -3,8 +3,11 @@
     <import src="/pages/components/loading/loading" />
     <template is="loading" />
   </view>
+
+   <view class='toolTip' style="top: {{sudokuEdge - 14}}px">{{toolTip.content}}</view> 
+
   <view class="title">9x9数独生成器</view>
-  <view class="wrap">
+  <view class="sudoku">
     <view wx:for="{{data}}" wx:key="" class="row">
       <block wx:key="" wx:for="{{item}}">
         <!-- rcl: row cross line 行与列光标香蕉 -->
@@ -21,9 +24,9 @@
 
   </view>
 
-  <view wx:if="{{dataOk}}" class="btnGroup">
+  <view wx:if="{{init}}" class="btnGroup">
     <button class="generate" disabled="{{btnDisabled}}" catchtap="handleGenerateSudoku">重新生成</button>
-    <button class="{{shade ? 'cancleShade' : 'shade'}}" catchtap="toggleShade">{{shade ? '查看答案' : '重新开始'}}</button>
+    <button class="{{shade ? 'cancleShade' : 'shade'}}" catchtap="toggleShade">{{shade ? '查看谜底' : '随机遮挡'}}</button>
   </view>
 </view>
 

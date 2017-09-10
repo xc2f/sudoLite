@@ -1,6 +1,7 @@
 //index.js
 // slice只能拷贝一层
-import objDeepCopy from '../../utils/objDeepCopy.js'
+// import objDeepCopy from '../../utils/objDeepCopy.js'
+import { degree } from '../../utils/config.js'
 //获取应用实例
 var app = getApp()
 Page({
@@ -20,7 +21,7 @@ Page({
     shade: true,
 
     // 初次渲染完成前时不显示按钮
-    dataOk: false,
+    init: false,
 
     // panel位置
     panelPosition: {
@@ -36,12 +37,29 @@ Page({
 
     // pannel定位用
     deviceInfo: null,
-    panelData: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    panelData: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+
+    sudokuEdge: 0,
+    // tooltip
+    toolTip: {
+      type: 'ready',
+      content: '点击空白格子开始计时'
+    },
+
+    // 数独完成情况
+    complete: false,
+    // 数独剩余数字情况，索引排序
+    leave: [9, 9, 9, 9, 9, 9, 9, 9, 9]
 
   },
+
   generateSudokuSuccess: false,
   // 回退
   history: [],
+
+  // 数独开始操作时间
+  startTime: 0,
+  timeInterval: null,
 
   initArray(type) {
     let array = new Array(9)
@@ -63,25 +81,60 @@ Page({
     let deviceInfo = app.globalData.deviceInfo
     this.setData({
       deviceInfo: deviceInfo,
-      boxSize: (deviceInfo.screenWidth - 20) / 9
+      boxSize: (deviceInfo.screenWidth - 20) / 9,
+      sudokuEdge: deviceInfo.windowHeight / 2 - deviceInfo.windowWidth / 2,
     })
     this.initArray('init')
     this.handleGenerateSudoku()
+  },
+
+  checkComplete() {
+
+  },
+
+  reset() {
+    // reset
+    clearInterval(this.timeInterval)
+    this.setData({
+      generateOk: false,
+      leave: [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      toolTip: {
+        type: 'ready',
+        content: '点击空白格子开始计时'
+      },
+      btnDisabled: true,
+      shade: true,
+      complete: false
+    })
   },
 
   handleGenerateSudoku() {
     if (this.data.btnDisabled) {
       return
     }
+    // !== timing
+    if (!this.data.init || this.data.complete || this.data.toolTip.type === 'ready' || this.data.toolTip.type === 'end') {
+      this.generateSudoku()
+    } else {
+      wx.showModal({
+        title: '提示',
+        content: '您本局成绩将不被记录，是否继续？',
+        success: res => {
+          if (res.confirm) {
+            this.generateSudoku()
+          }
+        }
+      })
+    }
+  },
+
+  generateSudoku() {
     this.generateSudokuSuccess = false
-    this.setData({
-      btnDisabled: true,
-    })
+    this.reset()
     let result = null
     while (!this.generateSudokuSuccess) {
-      result = this.generateSudoku()
+      result = this.toGenerate()
     }
-
     result.map((rowItem, rowIdx) => {
       rowItem.map((item, idx) => {
         result[rowIdx][idx] = {
@@ -95,26 +148,21 @@ Page({
     })
 
     if (this.data.shade) {
-      this.toggleShade(result)
-      this.setData({
-        btnDisabled: false,
-        generateOk: true,
-        dataOk: true
-      })
+      this.toggleShade(result, 'init')
     } else {
       this.setData({
-        btnDisabled: false,
         data: result,
-        generateOk: true,
-        dataOk: true
       })
     }
+
+    this.setData({
+      btnDisabled: false,
+      generateOk: true,
+      init: true,
+    })
   },
 
-  generateSudoku() {
-    this.setData({
-      generateOk: false
-    })
+  toGenerate() {
     // 只取值不刷新UI, 避免box为空
     let array = this.initArray()
     let time = new Date().getTime()
@@ -148,7 +196,6 @@ Page({
   },
 
   avalibleIdx(rowList, idxOfRowList, idxInList) {
-    // console.log('in')
     let avalibleList = []
     for (let m = 0; m < 9; m++) {
       if (rowList[m] === undefined && idxInList.indexOf(m) === -1) {
@@ -174,25 +221,62 @@ Page({
     return resultList[Math.floor(Math.random() * resultList.length)]
   },
 
-  toggleShade(newData) {
+  toggleShade(newData, from='btn') {
     // 点击事件默认传递一个事件对象，当参数是数组时表示当前为遮挡状态
     let isArray = newData instanceof Array
     let templist = isArray ? newData : this.data.data
+    let leave = this.data.leave.slice()
     templist.map(itemRow => (
       itemRow.map((item, idx) => {
-        let result = isArray ? ((Math.random() >= 0.3) ? true : false) : (this.data.shade ? true : ((Math.random() >= 0.3) ? true : false))
+        let result = isArray ? ((Math.random() >= degree) ? true : false) : (this.data.shade ? true : ((Math.random() >= degree) ? true : false))
         itemRow[idx].show = result ? true : false
         // itemRow[idx].className = result ? 'box' : 'box blank'
         item.duplicate = []
         item.fill = ''
         item.rcl = false
+        let leaveIdx = item.value - 1
+        leave[leaveIdx] = item.show ? leave[leaveIdx] - 1 : leave[leaveIdx]
       })
     ))
     this.setData({
       data: templist,
       shade: isArray ? true : !this.data.shade,
+      leave: leave
     })
+    if(from === 'init'){
+      this.isComplete(leave)
+    } else {
+      let tooltip = this.data.toolTip
+      tooltip = {
+        type: 'end',
+        content: '您已终止，请重新生成数独'
+      }
+      this.setData({
+        toolTip: tooltip
+      })
+    }
     this.togglePanel(false)
+  },
+
+  timing() {
+    if (this.data.toolTip.type === 'timing') {
+      return
+    }
+
+    this.startTime = new Date().getTime()
+    let m, s
+    this.timeInterval = setInterval(() => {
+      let time = Math.round((new Date().getTime() - this.startTime) / 1000)
+      m = Math.floor(time / 60)
+      s = time % 60 < 10 ? '0' + time % 60 : time % 60
+      let tooltip = {
+        type: 'timing',
+        content: m + ':' + s,
+      }
+      this.setData({
+        toolTip: tooltip
+      })
+    }, 1000)
   },
 
   basicAnimation(duration, delay) {
@@ -224,6 +308,7 @@ Page({
       return
     }
     this.showSame(false)
+    this.timing()
 
     // panel浮层位置
     let panelPosition = this.data.panelPosition
@@ -270,7 +355,7 @@ Page({
       panelPosition: panelPosition,
       boxCoords: boxCoords,
       data: data,
-      panelData: panelData
+      panelData: panelData,
     })
     this.togglePanel(true)
   },
@@ -292,7 +377,24 @@ Page({
         }
       }
     }
-    console.log(item)
+  },
+
+
+  isComplete(leave) {
+    let result = leave.reduce((p, n) => (p + n))
+    if (result === 0) {
+      clearInterval(this.timeInterval)
+      let tooltip = this.data.toolTip
+      tooltip = {
+        type: 'complete',
+        content: '用时' + (tooltip.type === 'ready' ? '0:00' : (tooltip.type === 'timing' ? tooltip.content : '')) + ', 恭喜！'
+      }
+      this.setData({
+        toolTip: tooltip,
+        complete: true,
+        shade: false
+      })
+    }
   },
 
   panelTap(e) {
@@ -327,9 +429,16 @@ Page({
 
     data[boxCoords.y][boxCoords.x].fill = (value === 'x') ? '' : value
 
+    // 计算剩余数字
+    let leave = this.data.leave.slice()
+    leave[value - 1] = leave[value - 1] - 1
+    this.isComplete(leave)
+
     this.setData({
-      data: data
+      data: data,
+      leave: leave
     })
+
     this.togglePanel(false)
 
     // 最多存100条记录

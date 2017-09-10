@@ -1,0 +1,1 @@
+export const degree = .3
