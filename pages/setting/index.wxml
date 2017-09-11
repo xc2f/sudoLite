@@ -1,0 +1,57 @@
+<!--pages/setting/index.wxml-->
+
+<view class='container'>
+  <view class='hd'>
+    <text class='title'>遮挡比例</text>
+    <text class='tip'>（需要填入数字的空白格子比例。比例越高，难度越大）</text>
+  </view>
+  <view class='bd'>
+    <slider class='slider' bindchange="slider2change" activeColor="#f0ad4e" value='30' show-value/>
+  </view>
+  <view class='table'>
+    <view class='thead'>
+      <text>范围</text>
+      <text>程度</text>
+    </view>
+    <view class='tbody'>
+      <text>0 ~ 10%</text>
+      <text>胎教水平</text>
+    </view>
+    <view class='tbody'>
+      <text>11% ~ 20%</text>
+      <text>托儿所水平</text>
+    </view>
+    <view class='tbody'>
+      <text>21% ~ 30%</text>
+      <text>幼儿园水平</text>
+    </view>
+    <view class='tbody'>
+      <text>31% ~ 40%</text>
+      <text>学前班水平</text>
+    </view>
+    <view class='tbody'>
+      <text>41% ~ 50%</text>
+      <text>小学生水平</text>
+    </view>
+    <view class='tbody'>
+      <text>51% ~ 60%</text>
+      <text>成人水平</text>
+    </view>
+    <view class='tbody'>
+      <text>61% ~ 70%</text>
+      <text>学徒水平</text>
+    </view>
+    <view class='tbody'>
+      <text>71% ~ 80%</text>
+      <text>高手水平</text>
+    </view>
+    <view class='tbody'>
+      <text>81% ~ 90%</text>
+      <text>大侠水平</text>
+    </view>
+    <view class='tbody'>
+      <text>91% ~ 100%</text>
+      <text>吹牛</text>
+    </view>
+  </view>
+</view>

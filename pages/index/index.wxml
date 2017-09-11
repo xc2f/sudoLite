@@ -1,38 +1,69 @@
-<view class="container" bindtap="hidePanel">
-  <view class='loading' wx:if="{{!generateOk}}">
-    <import src="/pages/components/loading/loading" />
-    <template is="loading" />
-  </view>
-
-   <view class='toolTip' style="top: {{sudokuEdge - 14}}px">{{toolTip.content}}</view> 
-
-  <view class="title">9x9数独生成器</view>
-  <view class="sudoku">
-    <view wx:for="{{data}}" wx:key="" class="row">
-      <block wx:key="" wx:for="{{item}}">
-        <!-- rcl: row cross line 行与列光标香蕉 -->
-        <view class="{{item.show ? (item.duplicate[0] ? 'box duplicate' : 'box show') : 'box blank'}}" data-value='{{item.value}}' data-x="{{item.x}}" data-y="{{item.y}}" data-show="{{item.show}}" catchtap='tapBox' style="width: {{boxSize}}px; height: {{boxSize}}px;">
-          <!-- <text wx:if='{{item}}'>{{item}}</text>
-          <input wx:else /> -->
-          <view class="{{item.rcl ? 'rcl' : ''}}"></view>
-          <text class="{{item.showSame ? 'showSame' : ''}}"> {{item.show ? item.value : (item.fill || '')}}</text>
-        </view>
-      </block>
-    </view>
-  </view>
-  <view>
-
-  </view>
-
-  <view wx:if="{{init}}" class="btnGroup">
-    <button class="generate" disabled="{{btnDisabled}}" catchtap="handleGenerateSudoku">重新生成</button>
-    <button class="{{shade ? 'cancleShade' : 'shade'}}" catchtap="toggleShade">{{shade ? '查看谜底' : '随机遮挡'}}</button>
-  </view>
+<view class='loading' wx:if="{{!generateOk}}">
+  <import src="/pages/components/loading/loading" />
+  <template is="loading" />
 </view>
 
-<!-- 浮层 -->
-<view class='panel' style="top: {{panelPosition.dy}}px; left: {{panelPosition.dx}}px;" animation="{{panelShowAnimation}}">
-  <block wx:for="{{panelData}}" wx:key>
-    <view catchtap='panelTap' data-value="{{item}}">{{item}}</view>
-  </block>
+<view class="container" bindtap="hidePanel">
+
+  <view class='drawer' animation="{{drawer}}">
+    <view class='top'>
+      <image src='https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKlJWibJZnnAWV84jLeh0ajwva1Y80uz5XOjr87EdVqygucvcD1kdJUbRInCckslQP6pJgSvpO2TAw/0'></image>
+      <text>轻巧数独</text>
+    </view>
+    <view class='row'>sudoku</view>
+
+    <navigator url="/pages/setting/index">
+      <view class='row'>
+        设置
+      </view>
+    </navigator>
+    <view class='row'>记录</view>
+    <view class='row'>排行</view>
+    <view class='row'>关于</view>
+  </view>
+
+  <view class="{{drawerToggle ? 'menu menuToLeft' : 'menu'}}" bindtap='menuAnimate' animation="{{menuAnimation}}">
+    <text animation="{{menuAnimationTop}}"></text>
+    <text animation="{{menuAnimationMiddle}}"></text>
+    <text animation="{{menuAnimationBottom}}"></text>
+  </view>
+
+  <view class="body">
+    <view class='shadow' wx:if="{{drawerToggle}}" bindtap='closeDrawer'></view>
+
+    <view class='toolTip' style="top: {{sudokuEdge - 14}}px">{{toolTip.content}}</view>
+
+    <view class="title">9x9数独生成器</view>
+    <view class="sudoku">
+      <view wx:for="{{data}}" wx:key="" class="row">
+        <block wx:key="" wx:for="{{item}}">
+          <!-- rcl: row cross line 行与列光标香蕉 -->
+          <view class="{{item.show ? (item.duplicate[0] ? 'box duplicate' : 'box show') : 'box blank'}}" data-value='{{item.value}}' data-x="{{item.x}}" data-y="{{item.y}}" data-show="{{item.show}}" catchtap='tapBox' style="width: {{boxSize}}px; height: {{boxSize}}px;">
+            <!-- <text wx:if='{{item}}'>{{item}}</text>
+          <input wx:else /> -->
+            <view class="{{item.rcl ? 'rcl' : ''}}"></view>
+            <text class="{{item.showSame ? 'showSame' : ''}}"> {{item.show ? item.value : (item.fill || '')}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+    <view>
+
+    </view>
+
+    <view wx:if="{{init}}" class="btnGroup">
+      <button class="generate" disabled="{{btnDisabled}}" catchtap="handleGenerateSudoku">重新生成</button>
+      <button class="{{shade ? 'cancleShade' : 'shade'}}" catchtap="toggleShade">{{shade ? '查看谜底' : '随机遮挡'}}</button>
+    </view>
+    <!-- 浮层 -->
+    <view class='panel' style="top: {{panelPosition.dy}}px; left: {{panelPosition.dx}}px;" animation="{{panelShowAnimation}}">
+      <block wx:for="{{panelData}}" wx:key>
+        <view catchtap='panelTap' data-value="{{item}}">{{item}}</view>
+      </block>
+    </view>
+
+    <!-- // body -->
+  </view>
+
+  <!-- // container -->
 </view>

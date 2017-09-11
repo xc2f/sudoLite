@@ -49,7 +49,14 @@ Page({
     // 数独完成情况
     complete: false,
     // 数独剩余数字情况，索引排序
-    leave: [9, 9, 9, 9, 9, 9, 9, 9, 9]
+    leave: [9, 9, 9, 9, 9, 9, 9, 9, 9],
+
+    menuAnimationTop: null,
+    menuAnimationTop: null,
+    menuAnimationMiddle: null,
+    menuAnimationBottom: null,
+    drawerToggle: false,
+    drawer: null,
 
   },
 
@@ -221,7 +228,7 @@ Page({
     return resultList[Math.floor(Math.random() * resultList.length)]
   },
 
-  toggleShade(newData, from='btn') {
+  toggleShade(newData, from = 'btn') {
     // 点击事件默认传递一个事件对象，当参数是数组时表示当前为遮挡状态
     let isArray = newData instanceof Array
     let templist = isArray ? newData : this.data.data
@@ -243,13 +250,13 @@ Page({
       shade: isArray ? true : !this.data.shade,
       leave: leave
     })
-    if(from === 'init'){
+    if (from === 'init') {
       this.isComplete(leave)
     } else {
       let tooltip = this.data.toolTip
       tooltip = {
         type: 'end',
-        content: '您已终止，请重新生成数独'
+        content: '请重新生成数独'
       }
       this.setData({
         toolTip: tooltip
@@ -286,6 +293,41 @@ Page({
       delay: delay || 0
     });
     return animation;
+  },
+
+  menuAnimate() {
+    if (this.data.drawerToggle) {
+      this.toggleDrawerHandler('toClose')
+    } else {
+      this.toggleDrawerHandler('toOpen')
+    }
+  },
+
+  closeDrawer() {
+    this.toggleDrawerHandler('toClose')
+  },
+
+  toggleDrawerHandler(type) {
+    let toggle = true,
+      menuDx = '70%',
+      menuRotate = 30,
+      menuWidth = 30,
+      drawDx = '30%'
+    if (type === 'toClose') {
+      toggle = false,
+        menuDx = 10,
+        menuRotate = 0,
+        menuWidth = 20,
+        drawDx = '100%'
+    }
+    this.setData({
+      drawerToggle: toggle,
+      menuAnimation: this.basicAnimation().translate(menuDx).step().export(),
+      menuAnimationTop: this.basicAnimation().rotate(-menuRotate).step().export(),
+      menuAnimationMiddle: this.basicAnimation().width(menuWidth).step().export(),
+      menuAnimationBottom: this.basicAnimation().rotate(menuRotate).step().export(),
+      drawer: this.basicAnimation().right(drawDx).step().export()
+    })
   },
 
   togglePanel(toShow) {

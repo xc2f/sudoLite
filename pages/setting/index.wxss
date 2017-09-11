@@ -1,0 +1,57 @@
+/* pages/setting/index.wxss */
+.container {
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 0 10px;
+}
+.slider {
+  width: 100%;
+}
+
+.hd {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #eee;
+}
+.hd .title {
+  font-weight: bold;
+  float: left;
+}
+.hd .tip {
+  font-size: 10px;
+  color: #777;
+}
+
+.bd {
+  width: 90%;
+  margin: 20px auto 30px;
+}
+.bd .slider {
+  margin: 0;
+  /* margin: 10px; */
+}
+.table {
+  width: 100%;
+}
+.table > view {
+  width: 100%;
+  height: 35px;
+  border-bottom: 1px solid #eee;
+}
+.table > view text {
+  line-height: 35px;
+  padding-left: 7px;
+  width: calc(50% - 8px);
+  float: left;
+  border-right: 1px solid #eee;
+  font-size: 14px;
+}
+.table > view text:first-child {
+  border-left: 1px solid #eee;
+  width: calc(50% - 9px);
+}
+.table view.thead text {
+  border-top: 1px solid #eee;
+  font-weight: bold;
+}
