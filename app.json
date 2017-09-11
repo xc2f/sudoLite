@@ -1,8 +1,9 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/components/loading/loading",
-    "pages/setting/index"
+    "pages/record/index",
+    "pages/setting/index",
+    "pages/components/loading/loading"
   ],
   "window":{
     "backgroundTextStyle":"light",

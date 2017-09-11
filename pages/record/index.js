@@ -1,44 +1,51 @@
-// pages/setting/index.js
+// pages/record/index.js
+import fromNow from '../../utils/moment.js'
 import { degree } from '../../utils/config.js'
 let app = getApp()
-
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    setDegree: 30,
-    degree: []
+    records: []
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.setData({
-      setDegree: parseInt(app.globalData.shadeDegree * 100)
+    wx.getStorage({
+      key: 'records',
+      success: res => {
+        let list = []
+        res.data.map(item => {
+          console.log((item.recordTime - item.startTime))
+          list.push({
+            recordTime: fromNow(item.recordTime),
+            showTime: item.showTime,
+            shadeDegree: parseInt(item.shadeDegree * 100) + '%',
+            degree: this.Adapter(item.shadeDegree)
+          })
+        })
+        this.setData({
+          records: list
+        })
+      },
     })
-    this.parseDegree()
   },
 
-  slider2change(e) {
-    let degree = parseFloat(e.detail.value * .01)
-    wx.setStorage({
-      key: 'shadeDegree',
-      data: degree,
-    })
-    app.globalData.shadeDegree = degree
-  },
-
-  parseDegree() {
+  Adapter(shadeDegree){
+    let setDegree = parseInt(shadeDegree * 100)
+    let degreeTitle
     degree.map(item => {
-      item.range = (item.range[0] !== 0 ? (item.range[0] + '%') : 0) + ' ~ ' + item.range[1] + '%'
+      if(setDegree >= item.range[0] && setDegree <= item.range[1]){
+        degreeTitle =  item.title
+        // 好像并不会跳过剩余的循环
+        return
+      }
     })
-    this.setData({
-      degree: degree
-    })
-
+    return degreeTitle
   },
 
   /**

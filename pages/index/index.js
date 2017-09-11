@@ -1,7 +1,7 @@
 //index.js
 // slice只能拷贝一层
 // import objDeepCopy from '../../utils/objDeepCopy.js'
-import { degree } from '../../utils/config.js'
+// import { degree } from '../../utils/config.js'
 //获取应用实例
 var app = getApp()
 Page({
@@ -233,6 +233,7 @@ Page({
     let isArray = newData instanceof Array
     let templist = isArray ? newData : this.data.data
     let leave = this.data.leave.slice()
+    let degree = app.globalData.shadeDegree
     templist.map(itemRow => (
       itemRow.map((item, idx) => {
         let result = isArray ? ((Math.random() >= degree) ? true : false) : (this.data.shade ? true : ((Math.random() >= degree) ? true : false))
@@ -427,14 +428,40 @@ Page({
     if (result === 0) {
       clearInterval(this.timeInterval)
       let tooltip = this.data.toolTip
+      let showTime = tooltip.type === 'ready' ? '0:00' : (tooltip.type === 'timing' ? tooltip.content : '')
       tooltip = {
         type: 'complete',
-        content: '用时' + (tooltip.type === 'ready' ? '0:00' : (tooltip.type === 'timing' ? tooltip.content : '')) + ', 恭喜！'
+        content: '用时' + showTime + ', 恭喜！'
       }
       this.setData({
         toolTip: tooltip,
         complete: true,
         shade: false
+      })
+      let backData = {
+        startTime: this.startTime,
+        recordTime: new Date().getTime(),
+        showTime: showTime,
+        shadeDegree: app.globalData.shadeDegree
+      }
+      wx.getStorage({
+        key: 'records',
+        success: function(res) {
+          let records = res.data
+          records.push(backData)
+          wx.setStorage({
+            key: 'records',
+            data: records,
+          })
+        },
+        fail: () => {
+          let records = []
+          records.push(backData)
+          wx.setStorage({
+            key: 'records',
+            data: records,
+          })
+        }
       })
     }
   },

@@ -10,14 +10,15 @@
       <image src='https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKlJWibJZnnAWV84jLeh0ajwva1Y80uz5XOjr87EdVqygucvcD1kdJUbRInCckslQP6pJgSvpO2TAw/0'></image>
       <text>轻巧数独</text>
     </view>
-    <view class='row'>sudoku</view>
-
-    <navigator url="/pages/setting/index">
-      <view class='row'>
-        设置
-      </view>
+    <navigator url="/pages/index/index">
+      <view class='row'>sudoku</view>
     </navigator>
-    <view class='row'>记录</view>
+    <navigator url="/pages/setting/index">
+      <view class='row'> 设置</view>
+    </navigator>
+    <navigator url="/pages/record/index">
+      <view class='row'>记录</view>
+    </navigator>
     <view class='row'>排行</view>
     <view class='row'>关于</view>
   </view>
