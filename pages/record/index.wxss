@@ -1,1 +1,64 @@
 /* pages/record/index.wxss */
+
+.container {
+  margin: 0 10px;
+}
+
+.records > view {
+  clear: both;
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+}
+
+.records > view.thead {
+  font-weight: bold;
+  border: 1px solid #eee;
+  height: 35px;
+  line-height: 35px;
+}
+
+.records view.thead text {
+  font-size: 15px;
+  border-right: 1px solid #eee;
+}
+
+.records view.thead text:last-child {
+  border: none;
+}
+
+.records text {
+  float: left;
+  font-size: 14px;
+  text-align: center;
+}
+
+.records > view text:first-child {
+  width: 30%;
+}
+
+.records > view text:nth-child(2) {
+  width: 20%;
+}
+
+.records > view text:nth-child(3) {
+  width: 20%;
+}
+
+.records > view text:last-child {
+  width: calc(30% - 3px);
+}
+
+.records > view.tbody {
+  border-left: 1px dashed #eee;
+  border-bottom: 1px dashed #eee;
+  border-right: 1px dashed #eee;
+}
+
+.records view.tbody text {
+  border-right: 1px dashed #eee;
+}
+
+.records view.tbody text:last-child {
+  border: none;
+}

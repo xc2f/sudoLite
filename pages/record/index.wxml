@@ -1,15 +1,22 @@
 <!--pages/record/index.wxml-->
-<view class='coontainer'>
-  <view class='thead'>
-    <text>记录时间</text>
-    <text>用时</text>
-    <text>遮挡比例</text>
-    <text>等级</text>
+<view class='container'>
+  <canvas canvas-id="myCanvas" style="border: 1px solid;width: {{canvasSize}}px; height: {{canvasSize * .7}}px" />
+  <view class='all'>
+
   </view>
-  <view class='tbody' wx:for="{{records}}" wx:key="recordTime">
-    <text>{{item.recordTime}}</text>
-    <text>{{item.showTime}}</text>
-    <text>{{item.shadeDegree}}</text>
-    <text>{{item.degree}}</text>
+  <view class='statistic'></view>
+  <view class='records'>
+    <view class='thead'>
+      <text>记录时间</text>
+      <text>用时</text>
+      <text>遮挡比例</text>
+      <text>等级</text>
+    </view>
+    <view class='tbody' wx:for="{{records}}" wx:key="recordTime">
+      <text>{{item.recordTime}}</text>
+      <text>{{item.showTime}}</text>
+      <text>{{item.shadeDegree}}</text>
+      <text>{{item.degree}}</text>
+    </view>
   </view>
 </view>
