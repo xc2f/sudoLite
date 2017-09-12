@@ -32,7 +32,20 @@
   <view class="body">
     <view class='shadow' wx:if="{{drawerToggle}}" bindtap='closeDrawer'></view>
 
-    <view class='toolTip' style="top: {{sudokuEdge - 14}}px">{{toolTip.content}}</view>
+    <view class='toolTip' style="top: {{sudokuTopEdge - 14}}px">{{toolTip.content}}</view>
+
+    <view class='option' style="top: {{sudokuTopEdge - 14}}px" bindtap='showOption'>options</view>
+
+    <view class='optionBox' animation="{{showOptionAnimation}}">
+      <view class='hd'>
+        <text>选项</text>
+        <text bindtap='hideOption'>X</text>
+      </view>
+      <view wx:if="{{init}}" class="btnGroup">
+        <button class="generate" disabled="{{btnDisabled}}" catchtap="handleGenerateSudoku">重新生成</button>
+        <button class="{{shade ? 'cancleShade' : 'shade'}}" catchtap="toggleShade">{{shade ? '查看谜底' : '随机遮挡'}}</button>
+      </view>
+    </view>
 
     <view class="title">9x9数独生成器</view>
     <view class="sudoku">
@@ -51,11 +64,6 @@
     <view>
 
     </view>
-
-    <view wx:if="{{init}}" class="btnGroup">
-      <button class="generate" disabled="{{btnDisabled}}" catchtap="handleGenerateSudoku">重新生成</button>
-      <button class="{{shade ? 'cancleShade' : 'shade'}}" catchtap="toggleShade">{{shade ? '查看谜底' : '随机遮挡'}}</button>
-    </view>
     <!-- 浮层 -->
     <view class='panel' style="top: {{panelPosition.dy}}px; left: {{panelPosition.dx}}px;" animation="{{panelShowAnimation}}">
       <block wx:for="{{panelData}}" wx:key>
@@ -63,8 +71,23 @@
       </block>
     </view>
 
+    <scroll-view scroll-y style='height: {{scrollHeight - 5}}px' class='scroll' wx:if="{{init}}">
+      <view class='wrap'>
+        <view class='item' wx:for="{{leave}}" wx:key="item">
+          <view wx:if="{{item}}">
+            <view class='index'>{{index+1}}</view>
+            <view class='imgs'>
+              <image wx:for="{{item}}" wx:key="item" src="/images/{{index+1}}.png"></image>
+            </view>
+            <view class='counts'>{{item}}</view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
     <!-- // body -->
   </view>
+
 
   <!-- // container -->
 </view>

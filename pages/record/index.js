@@ -112,6 +112,9 @@ Page({
     let min = axisYData[0]
     let max = axisYData[axisYData.length - 1]
 
+    if(data.length <=8 ){
+      devideY = data.length
+    }
     // 30为y轴起始坐标预留距离， 底部10，顶部20
     var avgValue = Math.round((max - min) / devideY)
     var avgHeight = (ch - padding.top - padding.bottom - 30) / devideY;
@@ -135,6 +138,7 @@ Page({
           origin.y - 10 - i * avgHeight);
       }
     }
+    ctx.setStrokeStyle('#777777')
     ctx.stroke()
     ctx.closePath()
 
@@ -152,26 +156,7 @@ Page({
       ctx.fill()
       ctx.closePath()
 
-      // ctx.moveTo(origin.x + item.shadeDegree * avgWidth, origin.y - 10);
-      // ctx.lineTo(origin.x + item.shadeDegree * avgWidth, origin.y - 50);
-
     })
-
-
-    //绘制折线
-    // for (var i = 0; i < arr.length; i++) {
-    //   var posY = origin.y - Math.floor(arr[i].value / max * (ch - 2 * padding - 50));
-    //   if (i == 0) {
-    //     ctx.moveTo(origin.x + i * avgWidth, posY);
-    //   } else {
-    //     ctx.lineTo(origin.x + i * avgWidth, posY);
-    //   }
-    //   //具体金额文字
-    //   ctx.fillText(arr[i].value,
-    //     origin.x + i * avgWidth,
-    //     posY
-    //   )
-    // }
 
     ctx.draw()
   },

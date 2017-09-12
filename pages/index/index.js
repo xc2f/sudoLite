@@ -39,7 +39,7 @@ Page({
     deviceInfo: null,
     panelData: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 
-    sudokuEdge: 0,
+    sudokuTopEdge: 0,
     // tooltip
     toolTip: {
       type: 'ready',
@@ -57,6 +57,10 @@ Page({
     menuAnimationBottom: null,
     drawerToggle: false,
     drawer: null,
+
+    showOptionAnimation: null,
+
+    scrollHeight: 0
 
   },
 
@@ -89,7 +93,8 @@ Page({
     this.setData({
       deviceInfo: deviceInfo,
       boxSize: (deviceInfo.screenWidth - 20) / 9,
-      sudokuEdge: deviceInfo.windowHeight / 2 - deviceInfo.windowWidth / 2,
+      sudokuTopEdge: deviceInfo.windowHeight / 2 - deviceInfo.windowWidth / 2,
+      scrollHeight: deviceInfo.windowHeight / 2 - deviceInfo.windowWidth / 2
     })
     this.initArray('init')
     this.handleGenerateSudoku()
@@ -446,7 +451,7 @@ Page({
       }
       wx.getStorage({
         key: 'records',
-        success: function(res) {
+        success: function (res) {
           let records = res.data
           records.push(backData)
           wx.setStorage({
@@ -583,5 +588,16 @@ Page({
       data: data
     })
   },
+
+  showOption() {
+    this.setData({
+      showOptionAnimation: this.basicAnimation().scale(1).step().export()
+    })
+  },
+  hideOption() {
+    this.setData({
+      showOptionAnimation: this.basicAnimation(300).scale(0).step().export()
+    })
+  }
 
 })

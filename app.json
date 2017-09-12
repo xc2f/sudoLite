@@ -1,7 +1,7 @@
 {
   "pages":[
-    "pages/record/index",
     "pages/index/index",
+    "pages/record/index",
     "pages/setting/index",
     "pages/components/loading/loading"
   ],
