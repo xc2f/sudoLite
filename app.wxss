@@ -13,6 +13,13 @@ button:after {
   border: none;
 }
 
+.baseColor {
+  color: #ffc107;
+}
+.baseBgColor {
+  background: #ffc107;
+}
+
 /* loading */
 .sk-cube-grid {
   width: 40px;
@@ -23,7 +30,7 @@ button:after {
 
 .sk-cube-grid .sk-cube {
   /* background: RGB(47, 117, 242)!important; */
-  background: rgb(255, 167, 61)!important;
+  background: #ffc107!important;
   width: 33%;
   height: 33%;
   background-color: #333;

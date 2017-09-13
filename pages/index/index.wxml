@@ -7,8 +7,12 @@
 
   <view class='drawer' animation="{{drawer}}">
     <view class='top'>
-      <image src='https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKlJWibJZnnAWV84jLeh0ajwva1Y80uz5XOjr87EdVqygucvcD1kdJUbRInCckslQP6pJgSvpO2TAw/0'></image>
-      <text>轻巧数独</text>
+      <movable-area>
+        <movable-view direction="all" x="{{avatarPosition.x}}" y="{{avatarPosition.y}}" out-of-bounds='true' damping='50' inertia='true' bindtouchend="moveAvatarEnd">
+          <image src='https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKlJWibJZnnAWV84jLeh0ajwva1Y80uz5XOjr87EdVqygucvcD1kdJUbRInCckslQP6pJgSvpO2TAw/0' catchtap='tapAvatar' catchlongpress="longTapAvatar"></image>
+        </movable-view>
+      </movable-area>
+      <text catchlongtap='longTapAvatarTitle'>{{avatarTitle.text}}</text>
     </view>
     <navigator url="/pages/index/index">
       <view class='row'>sudoku</view>
@@ -19,35 +23,52 @@
     <navigator url="/pages/record/index">
       <view class='row'>记录</view>
     </navigator>
-    <view class='row'>排行</view>
-    <view class='row'>关于</view>
-  </view>
-
-  <view class="{{drawerToggle ? 'menu menuToLeft' : 'menu'}}" bindtap='menuAnimate' animation="{{menuAnimation}}">
-    <text animation="{{menuAnimationTop}}"></text>
-    <text animation="{{menuAnimationMiddle}}"></text>
-    <text animation="{{menuAnimationBottom}}"></text>
+    <navigator url="/pages/rank/index">
+      <view class='row'>排行</view>
+    </navigator>
+    <navigator url='/pages/about/index'>
+      <view class='row'>关于</view>
+    </navigator>
   </view>
 
   <view class="body">
     <view class='shadow' wx:if="{{drawerToggle}}" bindtap='closeDrawer'></view>
+    <!-- 浮层 -->
+    <view class='panel' style="top: {{panelPosition.dy}}px; left: {{panelPosition.dx}}px;" animation="{{panelShowAnimation}}">
+      <block wx:for="{{panelData}}" wx:key="*this">
+        <view catchtap='panelTap' data-value="{{item}}">{{item}}</view>
+      </block>
+    </view>
 
-    <view class='toolTip' style="top: {{sudokuTopEdge - 14}}px">{{toolTip.content}}</view>
-
-    <view class='option' style="top: {{sudokuTopEdge - 14}}px" bindtap='showOption'>options</view>
-
+    <!-- options -->
     <view class='optionBox' animation="{{showOptionAnimation}}">
       <view class='hd'>
         <text>选项</text>
-        <text bindtap='hideOption'>X</text>
+        <image src="/images/close.png" bindtap='hideOption'></image>
       </view>
       <view wx:if="{{init}}" class="btnGroup">
         <button class="generate" disabled="{{btnDisabled}}" catchtap="handleGenerateSudoku">重新生成</button>
-        <button class="{{shade ? 'cancleShade' : 'shade'}}" catchtap="toggleShade">{{shade ? '查看谜底' : '随机遮挡'}}</button>
+        <button class="{{shade ? 'cancleShade' : 'shade'}}" catchtap="toggleShade">{{shade ? '查看结果' : '随机遮挡'}}</button>
       </view>
     </view>
 
-    <view class="title">9x9数独生成器</view>
+    <view class='top baseBgColor' style='height: {{sideSize - 5}}px;'>
+      <view class="{{drawerToggle ? 'menu menuToLeft' : 'menu'}}" bindtap='menuAnimate' animation="{{menuAnimation}}">
+        <text animation="{{menuAnimationTop}}"></text>
+        <text animation="{{menuAnimationMiddle}}"></text>
+        <text animation="{{menuAnimationBottom}}"></text>
+      </view>
+      <view class='toolTip'>{{toolTip.content}}</view>
+
+      <view class='option' bindtap='showOption'>
+        <image src="/images/option.png"></image>
+      </view>
+
+      <view class="title">9x9数独生成器</view>
+
+      <!-- end top -->
+    </view>
+
     <view class="sudoku">
       <view wx:for="{{data}}" wx:key="" class="row">
         <block wx:key="" wx:for="{{item}}">
@@ -55,8 +76,8 @@
           <view class="{{item.show ? (item.duplicate[0] ? 'box duplicate' : 'box show') : 'box blank'}}" data-value='{{item.value}}' data-x="{{item.x}}" data-y="{{item.y}}" data-show="{{item.show}}" catchtap='tapBox' style="width: {{boxSize}}px; height: {{boxSize}}px;">
             <!-- <text wx:if='{{item}}'>{{item}}</text>
           <input wx:else /> -->
-            <view class="{{item.rcl ? 'rcl' : ''}}"></view>
-            <text class="{{item.showSame ? 'showSame' : ''}}"> {{item.show ? item.value : (item.fill || '')}}</text>
+            <view class="{{item.rcl ? (item.showSame ? 'showSame rcl' : 'rcl') : (item.showSame ? 'showSame' : '')}}"></view>
+            <text> {{item.show ? item.value : (item.fill || '')}}</text>
           </view>
         </block>
       </view>
@@ -64,26 +85,22 @@
     <view>
 
     </view>
-    <!-- 浮层 -->
-    <view class='panel' style="top: {{panelPosition.dy}}px; left: {{panelPosition.dx}}px;" animation="{{panelShowAnimation}}">
-      <block wx:for="{{panelData}}" wx:key>
-        <view catchtap='panelTap' data-value="{{item}}">{{item}}</view>
-      </block>
-    </view>
 
-    <scroll-view scroll-y style='height: {{scrollHeight - 5}}px' class='scroll' wx:if="{{init}}">
-      <view class='wrap'>
-        <view class='item' wx:for="{{leave}}" wx:key="item">
-          <view wx:if="{{item}}">
-            <view class='index'>{{index+1}}</view>
-            <view class='imgs'>
-              <image wx:for="{{item}}" wx:key="item" src="/images/{{index+1}}.png"></image>
+    <view class='bottom'>
+      <scroll-view scroll-y style='height: {{sideSize - 5}}px' class='scroll' wx:if="{{init}}" scroll-into-view="{{toView}}" scroll-with-animation>
+        <view class='wrap'>
+          <view class='item' wx:for="{{leave}}" wx:key="*this" wx:for-index="idx">
+            <view wx:if="{{item}}" style='height: {{(sideSize - 5)/3}}px; line-height: {{(sideSize - 5)/3}}px' id="view{{idx}}" data-idx="{{idx}}" catchtap='tapRowToShowSame'>
+              <view class='index'>{{idx+1}}</view>
+              <view class="{{item>0 ? 'imgs' : 'imgs sgmi'}}">
+                <image wx:for="{{item > 0 ? item : -item}}" wx:key="*this" src="/images/{{idx+1}}.png"></image>
+              </view>
+              <view class='counts'>{{item}}</view>
             </view>
-            <view class='counts'>{{item}}</view>
           </view>
         </view>
-      </view>
-    </scroll-view>
+      </scroll-view>
+    </view>
 
     <!-- // body -->
   </view>

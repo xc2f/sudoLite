@@ -39,7 +39,7 @@ Page({
     deviceInfo: null,
     panelData: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 
-    sudokuTopEdge: 0,
+    sideSize: 0,
     // tooltip
     toolTip: {
       type: 'ready',
@@ -60,9 +60,19 @@ Page({
 
     showOptionAnimation: null,
 
-    scrollHeight: 0
+    toView: 'view0',
 
+    avatarPosition: {
+      x: -25,
+      y: 25
+    },
+    avatarTitle: {
+      text: '轻巧数独',
+      step: 0
+    },
+    // end data
   },
+  avatarShowTimes: 0,
 
   generateSudokuSuccess: false,
   // 回退
@@ -90,11 +100,11 @@ Page({
 
   onLoad: function () {
     let deviceInfo = app.globalData.deviceInfo
+    console.log(deviceInfo)
     this.setData({
       deviceInfo: deviceInfo,
-      boxSize: (deviceInfo.screenWidth - 20) / 9,
-      sudokuTopEdge: deviceInfo.windowHeight / 2 - deviceInfo.windowWidth / 2,
-      scrollHeight: deviceInfo.windowHeight / 2 - deviceInfo.windowWidth / 2
+      boxSize: (deviceInfo.windowWidth) / 9,
+      sideSize: (deviceInfo.windowHeight - deviceInfo.windowWidth) / 2,
     })
     this.initArray('init')
     this.handleGenerateSudoku()
@@ -134,6 +144,8 @@ Page({
         success: res => {
           if (res.confirm) {
             this.generateSudoku()
+          } else {
+            wx.stopPullDownRefresh()
           }
         }
       })
@@ -147,6 +159,7 @@ Page({
     while (!this.generateSudokuSuccess) {
       result = this.toGenerate()
     }
+    wx.stopPullDownRefresh()
     result.map((rowItem, rowIdx) => {
       rowItem.map((item, idx) => {
         result[rowIdx][idx] = {
@@ -234,10 +247,10 @@ Page({
   },
 
   toggleShade(newData, from = 'btn') {
-    // 点击事件默认传递一个事件对象，当参数是数组时表示当前为遮挡状态
+    // 点击事件默认传递一个事件对象，当参数是数组时表示初始化，并且为遮挡状态
     let isArray = newData instanceof Array
     let templist = isArray ? newData : this.data.data
-    let leave = this.data.leave.slice()
+    let leave = [9, 9, 9, 9, 9, 9, 9, 9, 9]
     let degree = app.globalData.shadeDegree
     templist.map(itemRow => (
       itemRow.map((item, idx) => {
@@ -248,16 +261,14 @@ Page({
         item.fill = ''
         item.rcl = false
         let leaveIdx = item.value - 1
+        // 切换时show的item会再减1
         leave[leaveIdx] = item.show ? leave[leaveIdx] - 1 : leave[leaveIdx]
       })
     ))
-    this.setData({
-      data: templist,
-      shade: isArray ? true : !this.data.shade,
-      leave: leave
-    })
+
     if (from === 'init') {
-      this.isComplete(leave)
+      // init时如果完成数独不记录
+      this.isComplete(leave, true)
     } else {
       let tooltip = this.data.toolTip
       tooltip = {
@@ -267,7 +278,13 @@ Page({
       this.setData({
         toolTip: tooltip
       })
+      // leave = this.data.shade ? [0,0,0,0,0,0,0,0,0] : leave
     }
+    this.setData({
+      data: templist,
+      shade: isArray ? true : !this.data.shade,
+      leave: leave
+    })
     this.togglePanel(false)
   },
 
@@ -346,13 +363,32 @@ Page({
     })
   },
 
+  clearStyle() {
+    let data = this.data.data
+    data.map((rowItem, rowIdx) => {
+      rowItem.map((item, idx) => {
+        item.rcl = false
+        item.showSame = false
+      })
+    })
+    this.setData({
+      data: data
+    })
+  },
+
   tapBox(e) {
+    if (this.data.complete) {
+      return
+    }
     let show = e.currentTarget.dataset.show
     let value = e.currentTarget.dataset.value
 
     if (show) {
       this.togglePanel(false)
       this.showSame(true, value)
+      this.setData({
+        toView: 'view' + (value - 1)
+      })
       return
     }
     this.showSame(false)
@@ -428,9 +464,29 @@ Page({
   },
 
 
-  isComplete(leave) {
-    let result = leave.reduce((p, n) => (p + n))
+  isComplete(leave, init = false) {
+    console.log(leave)
+    
+    let result = leave.reduce((p, n) => p + n)
     if (result === 0) {
+      if (init) {
+        // 取消初始化的成绩记录
+        let tooltip = this.data.toolTip
+        tooltip = {
+          type: 'end',
+          content: '运气太好了，没有一个能点的'
+        }
+        this.setData({
+          toolTip: tooltip,
+          complete: true,
+          shade: false
+        })
+        return
+      }
+
+      this.clearStyle()
+      this.togglePanel(false)
+
       clearInterval(this.timeInterval)
       let tooltip = this.data.toolTip
       let showTime = tooltip.type === 'ready' ? '0:00' : (tooltip.type === 'timing' ? tooltip.content : '')
@@ -501,13 +557,18 @@ Page({
       }
     })
 
-    data[boxCoords.y][boxCoords.x].fill = (value === 'x') ? '' : value
-
     // 计算剩余数字
     let leave = this.data.leave.slice()
-    leave[value - 1] = leave[value - 1] - 1
+    if (value === 'x') {
+      let idx = data[boxCoords.y][boxCoords.x].fill
+      leave[idx - 1] = leave[idx - 1] + 1
+    } else {
+      leave[value - 1] = leave[value - 1] - 1
+    }
+
     this.isComplete(leave)
 
+    data[boxCoords.y][boxCoords.x].fill = (value === 'x') ? '' : value
     this.setData({
       data: data,
       leave: leave
@@ -598,6 +659,97 @@ Page({
     this.setData({
       showOptionAnimation: this.basicAnimation(300).scale(0).step().export()
     })
-  }
+  },
 
+  tapRowToShowSame(e) {
+    this.showSame(true, e.currentTarget.dataset.idx + 1)
+  },
+
+  moveAvatarEnd(e) {
+    let position = {
+      x: -25,
+      y: 25
+    }
+    this.setData({
+      avatarPosition: position
+    })
+  },
+  tapAvatar() {
+    let step = this.data.avatarTitle.step
+    if (step > 0) {
+      return
+    }
+    let showText = '别点我'
+    if (this.avatarShowTimes === 1) {
+      showText = '又是你'
+    } else if (this.avatarShowTimes === 2) {
+      showText = '还是你'
+    } else if (this.avatarShowTimes === 3) {
+      showText = '怎么老是你'
+    } else if (this.avatarShowTimes > 3) {
+      showText = '拉黑你'
+      // disabled
+    }
+    this.setData({
+      avatarTitle: {
+        text: showText,
+        step: 1,
+      }
+    })
+    // 超过三次后不再进行对话
+    if (this.avatarShowTimes > 3) {
+      this.tapAvatarShowTitle('轻巧数独', 0, 1500, null)
+      return
+    }
+    this.tapAvatarShowTitle('......', 2, 1000, null)
+    this.tapAvatarShowTitle('这下可好', 3, 2500, null)
+    this.tapAvatarShowTitle('我忘了自己叫啥了/(ㄒoㄒ)/~~', 4, 4000, null)
+    this.tapAvatarShowTitle('怎么办怎么办😭', 5, 6000, null)
+    this.tapAvatarShowTitle('嗯？我想想...', 6, 8000, null)
+    this.tapAvatarShowTitle('主人好像设定过', 7, 9000, null)
+    this.tapAvatarShowTitle('长按我可以还原，快试试O(∩_∩)O', 8, 10000, res => {
+      this.avatarShowTimes++
+    })
+
+  },
+
+  longTapAvatar(e) {
+    if (this.data.avatarTitle.step === 8) {
+      let avatarTitle = {
+        text: '笨呐，是我，不是上面那位！',
+        step: 9
+      }
+      this.setData({
+        avatarTitle: avatarTitle
+      })
+    }
+  },
+
+  tapAvatarShowTitle(text, step, delay, callback) {
+    setTimeout(() => {
+      let avatarTitle = {
+        text: text,
+        step: step
+      }
+      this.setData({
+        avatarTitle: avatarTitle
+      })
+      callback ? callback() : ''
+    }, delay || 2000)
+  },
+
+  longTapAvatarTitle(e) {
+    let step = this.data.avatarTitle.step
+    if (step === 8 || step === 9) {
+      this.tapAvatarShowTitle('谢谢o(*￣▽￣*)ブ', 10, 0, res => {
+        this.tapAvatarShowTitle('轻巧数独', 0, 0, null)
+      })
+    }
+  },
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh: function () {
+    this.handleGenerateSudoku()
+  },
 })

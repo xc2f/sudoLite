@@ -3,12 +3,15 @@
     "pages/index/index",
     "pages/record/index",
     "pages/setting/index",
+    "pages/rank/index",
+    "pages/about/index",
     "pages/components/loading/loading"
   ],
   "window":{
-    "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "sudoLite",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffc107",
+    "backgroundTextStyle":"dark",
+    "backgroundColor": "#fff"
   }
 }

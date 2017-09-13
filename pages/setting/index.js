@@ -1,7 +1,7 @@
 // pages/setting/index.js
 import { degree } from '../../utils/config.js'
+import deepCopy from '../../utils/deepCopy.js'
 let app = getApp()
-
 Page({
 
   /**
@@ -9,7 +9,8 @@ Page({
    */
   data: {
     setDegree: 30,
-    degree: []
+    degree: [],
+    showTip: false,
   },
 
   /**
@@ -32,13 +33,20 @@ Page({
   },
 
   parseDegree() {
-    degree.map(item => {
+    let degreeData = deepCopy(degree)
+    degreeData.map(item => {
       item.range = (item.range[0] !== 0 ? (item.range[0] + '%') : 0) + ' ~ ' + item.range[1] + '%'
     })
     this.setData({
-      degree: degree
+      degree: degreeData
     })
 
+  },
+
+  showTip: function(){
+    this.setData({
+      showTip: true
+    })
   },
 
   /**

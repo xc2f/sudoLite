@@ -1,9 +1,11 @@
 /* pages/setting/index.wxss */
+
 .container {
   justify-content: flex-start;
   align-items: flex-start;
   margin: 0 10px;
 }
+
 .slider {
   width: 100%;
 }
@@ -14,10 +16,19 @@
   line-height: 50px;
   border-bottom: 1px solid #eee;
 }
+
+.hd image {
+  width: 17px;
+  height: 17px;
+  /* (50 - 17) / 2 */
+  padding: 17px 17px 17px 7px;
+}
+
 .hd .title {
   font-weight: bold;
   float: left;
 }
+
 .hd .tip {
   font-size: 10px;
   color: #777;
@@ -27,18 +38,22 @@
   width: 90%;
   margin: 20px auto 30px;
 }
+
 .bd .slider {
   margin: 0;
   /* margin: 10px; */
 }
+
 .table {
   width: 100%;
 }
+
 .table > view {
   width: 100%;
   height: 35px;
   border-bottom: 1px solid #eee;
 }
+
 .table > view text {
   line-height: 35px;
   padding-left: 7px;
@@ -47,10 +62,12 @@
   border-right: 1px solid #eee;
   font-size: 14px;
 }
+
 .table > view text:first-child {
   border-left: 1px solid #eee;
   width: calc(50% - 9px);
 }
+
 .table view.thead text {
   border-top: 1px solid #eee;
   font-weight: bold;

@@ -1,0 +1,11 @@
+/* pages/rank/index.wxss */
+
+.container {
+  text-align: center;
+  padding-top: 17px;
+}
+
+.container text {
+  font-size: 14px;
+  color: #777;
+}

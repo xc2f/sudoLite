@@ -2,14 +2,15 @@ page, .container {
   /* position: relative;
   width: 100%;
   height: 100vh; */
+  overflow: hidden;
 }
 
 .body {
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  /* justify-content: center; *//* align-items: center; */
 }
 
 .body .shadow {
@@ -22,37 +23,39 @@ page, .container {
   z-index: 2;
 }
 
+.body .top {
+  width: 100%;
+  position: relative;
+}
+
 .sudoku {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.3);
+  /* box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.3); */
 }
 
 .box {
-  /* width: 17px;
-  height: 17px; */
   margin: 0;
-  /* padding: 7px; */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  border-right: 1px dashed #eee;
-  border-bottom: 1px dashed #eee;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #eee;
-  background: #567;
+  color: #777;
+  background: #eee;
   /* borderradius对手机布局有影响 *//* border-radius: 2px; */
   position: relative;
+  border-right: 1px dashed #ddd;
+  border-bottom: 1px dashed #ddd;
 }
 
 .box.blank {
   color: #5cb85c;
 }
 
-.box .rcl {
+.box .rcl, .box .showSame {
   position: absolute;
   top: 0;
   right: 0;
@@ -60,7 +63,10 @@ page, .container {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.1);
+}
+
+.box .rcl {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .box.duplicate {
@@ -68,7 +74,8 @@ page, .container {
 }
 
 .box.show .showSame {
-  color: #f0ad4e;
+  /* color: #f0ad4e; */
+  background: rgba(255, 193, 7, 0.3);
 }
 
 .row {
@@ -79,19 +86,27 @@ page, .container {
 }
 
 .row:nth-child(1) {
-  border-top: 2px solid #fff;
+  /* border-top: 2px solid #ddd; */
 }
 
 .row:nth-child(3n) {
-  border-bottom: 2px solid #fff;
+  border-bottom: 2px solid #ddd;
+}
+
+.row:last-child {
+  border-bottom: none;
 }
 
 .row .box:first-child {
-  border-left: 2px solid #fff;
+  /* border-left: 2px solid #ddd; */
 }
 
 .row .box:nth-child(3n) {
-  border-right: 2px solid #fff;
+  border-right: 2px solid #ddd;
+}
+
+.row .box:last-child {
+  border-right: none;
 }
 
 .row:nth-child(3n) .box {
@@ -109,7 +124,8 @@ page, .container {
   position: absolute;
   width: 220px;
   height: 170px;
-  margin: 0 auto;
+  top: calc(50% - 85px);
+  left: calc(50% - 110px);
   z-index: 2;
   background: #fff;
   border-radius: 2px;
@@ -117,18 +133,25 @@ page, .container {
   transform: scale(0);
 }
 
-.optionBox .hd text:first-child, .optionBox .hd text:last-child {
+.optionBox .hd {
   height: 30px;
   line-height: 30px;
-  border-bottom: 1px solid #eee;
+  /* border-bottom: 1px solid #eee; */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.optionBox .hd text {
   font-size: 14px;
   color: #222;
   padding-left: 10px;
 }
 
-.optionBox .hd text:last-child {
+.optionBox .hd image {
+  padding: 6px;
+  width: 17px;
+  height: 17px;
+  line-height: 30px;
   float: right;
-  padding: 10px;
 }
 
 .btnGroup {
@@ -184,6 +207,7 @@ page, .container {
   position: absolute;
   box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.3);
   transform: scale(0);
+  z-index: 2;
 }
 
 .panel > view {
@@ -191,8 +215,9 @@ page, .container {
   height: 30px;
   line-height: 30px;
   /* border: 1px solid blue; */
-  color: #fff;
-  background: rgba(0, 0, 0, 0.2);
+  color: #777;
+  /* background: rgba(0, 0, 0, 0.2); */
+  background: #fff;
   float: left;
   /* margin, padding, border都算在width内 */
   margin: 2px;
@@ -202,15 +227,20 @@ page, .container {
 .toolTip {
   position: absolute;
   left: 10px;
-  font-size: 12px;
-  color: #777;
+  bottom: 10px;
+  font-size: 15px;
+  color: #fff;
 }
 
 .option {
   position: absolute;
   right: 10px;
-  font-size: 12px;
-  color: #777;
+  bottom: 2px;
+}
+
+.option image {
+  width: 27px;
+  height: 27px;
 }
 
 .menu {
@@ -224,14 +254,10 @@ page, .container {
 .menu text {
   width: 20px;
   height: 3px;
-  background: #777;
+  background: #fff;
   display: block;
   margin: 3px;
   border-radius: 3px;
-}
-
-.menu.menuToLeft text {
-  background: #eee;
 }
 
 .container .drawer {
@@ -253,8 +279,20 @@ page, .container {
   align-items: center;
   flex-direction: column;
   white-space: nowrap;
-  border-bottom: 1px solid #eee;
+  /* border-bottom: 1px solid #eee; */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   /* margin-bottom: 10px; */
+}
+
+.container .drawer .top movable-area {
+  width: 100%;
+  height: 100%;
+  left: 50%;
+}
+
+.container .drawer .top movable-view {
+  width: 50px;
+  height: 50px;
 }
 
 .container .drawer .top image {
@@ -268,7 +306,7 @@ page, .container {
 .container .drawer .top text {
   color: #777;
   font-size: 12px;
-  margin: 7px;
+  margin: 0 0 15px 0;
 }
 
 .container .drawer .row {
@@ -279,7 +317,7 @@ page, .container {
 }
 
 .scroll {
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   position: absolute;
   left: 0;
   right: 0;
@@ -287,8 +325,6 @@ page, .container {
 }
 
 .scroll .item > view {
-  height: 30px;
-  line-height: 30px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -299,22 +335,30 @@ page, .container {
 }
 
 .scroll .item .index {
-  flex: 1;
-  background: #eee;
+  flex: 1.5;
+  background: rgba(255, 193, 7, 0.3);
   color: #bbb;
   border-right: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
 }
 
 .scroll .imgs {
-  flex: 8;
+  flex: 7;
   text-align: left;
   line-height: 30px;
   border-bottom: 1px dashed #ddd;
+  overflow: hidden;
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+/* 负数 */
+.scroll .sgmi {
+  text-align: right!important;
+} 
 
 .scroll .counts {
-  flex: 1;
+  flex: 1.5;
   border-left: 1px dashed #ddd;
   border-bottom: 1px dashed #ddd;
   font-weight: bold;
