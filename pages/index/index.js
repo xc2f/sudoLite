@@ -4,6 +4,7 @@
 // import { degree } from '../../utils/config.js'
 //获取应用实例
 var app = getApp()
+import { adapterDegree } from '../../utils/config.js'
 Page({
   data: {
     // 数组
@@ -72,6 +73,7 @@ Page({
     },
     // end data
   },
+  degree: .3,
   avatarShowTimes: 0,
 
   generateSudokuSuccess: false,
@@ -100,7 +102,8 @@ Page({
 
   onLoad: function () {
     let deviceInfo = app.globalData.deviceInfo
-    console.log(deviceInfo)
+    this.degree = app.globalData.shadeDegree
+    // console.log(deviceInfo)
     this.setData({
       deviceInfo: deviceInfo,
       boxSize: (deviceInfo.windowWidth) / 9,
@@ -251,10 +254,9 @@ Page({
     let isArray = newData instanceof Array
     let templist = isArray ? newData : this.data.data
     let leave = [9, 9, 9, 9, 9, 9, 9, 9, 9]
-    let degree = app.globalData.shadeDegree
     templist.map(itemRow => (
       itemRow.map((item, idx) => {
-        let result = isArray ? ((Math.random() >= degree) ? true : false) : (this.data.shade ? true : ((Math.random() >= degree) ? true : false))
+        let result = isArray ? ((Math.random() >= this.degree) ? true : false) : (this.data.shade ? true : ((Math.random() >= this.degree) ? true : false))
         itemRow[idx].show = result ? true : false
         // itemRow[idx].className = result ? 'box' : 'box blank'
         item.duplicate = []
@@ -466,7 +468,7 @@ Page({
 
   isComplete(leave, init = false) {
     console.log(leave)
-    
+
     let result = leave.reduce((p, n) => p + n)
     if (result === 0) {
       if (init) {
@@ -499,19 +501,25 @@ Page({
         complete: true,
         shade: false
       })
+
+      // 存缓存
       let backData = {
         startTime: this.startTime,
         recordTime: new Date().getTime(),
         showTime: showTime,
         shadeDegree: app.globalData.shadeDegree
       }
+
+      // 即生成0到9的key
+      let storagePrimaryKey = adapterDegree(this.degree, 'range')[1] / 10 - 1
+
       wx.getStorage({
-        key: 'records',
+        key: 'record' + storagePrimaryKey,
         success: function (res) {
           let records = res.data
           records.push(backData)
           wx.setStorage({
-            key: 'records',
+            key: 'record' + storagePrimaryKey,
             data: records,
           })
         },
@@ -519,7 +527,71 @@ Page({
           let records = []
           records.push(backData)
           wx.setStorage({
+            key: 'record' + storagePrimaryKey,
+            data: records,
+          })
+        }
+      })
+
+      // 存一个总的记录，记录各等级最短时间等等
+      wx.getStorage({
+        key: 'records',
+        success: function (res) {
+          let records = res.data
+          // 用时短则替换
+          let target = records[storagePrimaryKey]
+          let counts = target.counts
+          let diffValue = (target.recordTime - target.startTime) - (backData.recordTime - backData.startTime)
+          if (diffValue > 0 || (target.recordTime - target.startTime === 0)){
+            records.splice(storagePrimaryKey, 1, backData)
+          }
+          records[storagePrimaryKey].counts = counts + 1
+
+          wx.setStorage({
             key: 'records',
+            data: records,
+          })
+        },
+        fail: () => {
+          let records = []
+          for(let i=0; i<10; i++){
+            if (i === storagePrimaryKey){
+              backData.counts = 1
+              records.push(backData)
+              continue
+            }
+            records.push({
+              startTime: 0,
+              recordTime: 0,
+              counts: 0,
+            })
+          }
+          wx.setStorage({
+            key: 'records',
+            data: records,
+          })
+        }
+      })
+
+      // 存最近50条记录
+      wx.getStorage({
+        key: 'recordLatest',
+        success: function (res) {
+          let records = res.data
+          if(records.length > 50){
+            records.shift()
+          }
+          records.push(backData)
+          wx.setStorage({
+            key: 'recordLatest',
+            data: records,
+          })
+        },
+        fail: () => {
+          let records = []
+          records.push(backData)
+          wx.setStorage({
+            key: 'recordLatest',
             data: records,
           })
         }

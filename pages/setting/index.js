@@ -29,6 +29,7 @@ Page({
       key: 'shadeDegree',
       data: degree,
     })
+    console.log(degree)
     app.globalData.shadeDegree = degree
   },
 

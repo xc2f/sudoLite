@@ -1,10 +1,30 @@
 <!--pages/record/index.wxml-->
 <view class='container'>
-  <canvas canvas-id="myCanvas" style="border: 1px solid;width: {{canvasSize}}px; height: {{canvasSize * .7}}px" />
+  <canvas canvas-id="myCanvas" bindlongpress='canvasToImg' style="width: {{canvasSize}}px; height: {{canvasSize * .7}}px;background:#fff;" />
   <view class='all'>
 
   </view>
   <view class='statistic'></view>
+  <view class='records'>
+    <view class='thead'>
+      <text>等级</text>
+      <text>总局数</text>
+      <text>最短用时</text>
+      <text>时间</text>
+    </view>
+    <view class='tbody' wx:for="{{records}}" wx:if="{{item.counts}}" wx:key="recordTime">
+      <text>{{item.degree}}</text>
+      <text>{{item.counts}}</text>
+      <text>{{item.showTime}}</text>
+      <text>{{item.recordTime}}</text>
+    </view>
+    <view class='tbody'>
+      <text>*总计</text>
+      <text>{{countsAll || 0}}</text>
+      <text>\</text>
+      <text>\</text>
+    </view>
+  </view>
   <view class='records'>
     <view class='thead'>
       <text>记录时间</text>
@@ -12,7 +32,7 @@
       <text>遮挡比例</text>
       <text>等级</text>
     </view>
-    <view class='tbody' wx:for="{{records}}" wx:key="recordTime">
+    <view class='tbody' wx:for="{{recordLatest}}" wx:key="recordTime">
       <text>{{item.recordTime}}</text>
       <text>{{item.showTime}}</text>
       <text>{{item.shadeDegree}}</text>
