@@ -111,10 +111,9 @@ Page({
     })
     this.initArray('init')
     this.handleGenerateSudoku()
-  },
-
-  checkComplete() {
-
+    wx.setNavigationBarTitle({
+      title: adapterDegree(this.degree)
+    })
   },
 
   reset() {
@@ -270,7 +269,7 @@ Page({
 
     if (from === 'init') {
       // init时如果完成数独不记录
-      this.isComplete(leave, true)
+      this.isComplete(templist, true)
     } else {
       let tooltip = this.data.toolTip
       tooltip = {
@@ -466,137 +465,144 @@ Page({
   },
 
 
-  isComplete(leave, init = false) {
-    console.log(leave)
+  isComplete(data, init = false) {
+    // console.log(leave)
+    // let result = leave.reduce((p, n) => p + n)
+    // if (result === 0) {
+    // item为show不检查为false
+    // item不为show的情况下item.fill为空为true, item.fill !== item.valueweitrue
+    let unComplete = data.some(itemRow => (itemRow.some(item => (!item.show ? (item.fill ? (item.fill !== item.value) : true) : false))))
+    console.log(unComplete)
+    if (unComplete) {
+      return
+    }
 
-    let result = leave.reduce((p, n) => p + n)
-    if (result === 0) {
-      if (init) {
-        // 取消初始化的成绩记录
-        let tooltip = this.data.toolTip
-        tooltip = {
-          type: 'end',
-          content: '运气太好了，没有一个能点的'
-        }
-        this.setData({
-          toolTip: tooltip,
-          complete: true,
-          shade: false
-        })
-        return
-      }
-
-      this.clearStyle()
-      this.togglePanel(false)
-
-      clearInterval(this.timeInterval)
+    if (init) {
+      // 取消初始化的成绩记录
       let tooltip = this.data.toolTip
-      let showTime = tooltip.type === 'ready' ? '0:00' : (tooltip.type === 'timing' ? tooltip.content : '')
       tooltip = {
-        type: 'complete',
-        content: '用时' + showTime + ', 恭喜！'
+        type: 'end',
+        content: '运气太好了，没有一个能点的'
       }
       this.setData({
         toolTip: tooltip,
         complete: true,
         shade: false
       })
-
-      // 存缓存
-      let backData = {
-        startTime: this.startTime,
-        recordTime: new Date().getTime(),
-        showTime: showTime,
-        shadeDegree: app.globalData.shadeDegree
-      }
-
-      // 即生成0到9的key
-      let storagePrimaryKey = adapterDegree(this.degree, 'range')[1] / 10 - 1
-
-      wx.getStorage({
-        key: 'record' + storagePrimaryKey,
-        success: function (res) {
-          let records = res.data
-          records.push(backData)
-          wx.setStorage({
-            key: 'record' + storagePrimaryKey,
-            data: records,
-          })
-        },
-        fail: () => {
-          let records = []
-          records.push(backData)
-          wx.setStorage({
-            key: 'record' + storagePrimaryKey,
-            data: records,
-          })
-        }
-      })
-
-      // 存一个总的记录，记录各等级最短时间等等
-      wx.getStorage({
-        key: 'records',
-        success: function (res) {
-          let records = res.data
-          // 用时短则替换
-          let target = records[storagePrimaryKey]
-          let counts = target.counts
-          let diffValue = (target.recordTime - target.startTime) - (backData.recordTime - backData.startTime)
-          if (diffValue > 0 || (target.recordTime - target.startTime === 0)){
-            records.splice(storagePrimaryKey, 1, backData)
-          }
-          records[storagePrimaryKey].counts = counts + 1
-
-          wx.setStorage({
-            key: 'records',
-            data: records,
-          })
-        },
-        fail: () => {
-          let records = []
-          for(let i=0; i<10; i++){
-            if (i === storagePrimaryKey){
-              backData.counts = 1
-              records.push(backData)
-              continue
-            }
-            records.push({
-              startTime: 0,
-              recordTime: 0,
-              counts: 0,
-            })
-          }
-          wx.setStorage({
-            key: 'records',
-            data: records,
-          })
-        }
-      })
-
-      // 存最近50条记录
-      wx.getStorage({
-        key: 'recordLatest',
-        success: function (res) {
-          let records = res.data
-          if(records.length > 50){
-            records.shift()
-          }
-          records.push(backData)
-          wx.setStorage({
-            key: 'recordLatest',
-            data: records,
-          })
-        },
-        fail: () => {
-          let records = []
-          records.push(backData)
-          wx.setStorage({
-            key: 'recordLatest',
-            data: records,
-          })
-        }
-      })
+      return
     }
+
+    this.clearStyle()
+    this.togglePanel(false)
+
+    clearInterval(this.timeInterval)
+    let tooltip = this.data.toolTip
+    let showTime = tooltip.type === 'ready' ? '0:00' : (tooltip.type === 'timing' ? tooltip.content : '')
+    tooltip = {
+      type: 'complete',
+      content: '用时' + showTime + ', 恭喜！'
+    }
+    this.setData({
+      toolTip: tooltip,
+      complete: true,
+      shade: false
+    })
+
+    // 存缓存
+    let backData = {
+      startTime: this.startTime,
+      recordTime: new Date().getTime(),
+      showTime: showTime,
+      shadeDegree: app.globalData.shadeDegree
+    }
+
+    // 即生成0到9的key
+    let storagePrimaryKey = adapterDegree(this.degree, 'range')[1] / 10 - 1
+
+    wx.getStorage({
+      key: 'record' + storagePrimaryKey,
+      success: function (res) {
+        let records = res.data
+        records.push(backData)
+        wx.setStorage({
+          key: 'record' + storagePrimaryKey,
+          data: records,
+        })
+      },
+      fail: () => {
+        let records = []
+        records.push(backData)
+        wx.setStorage({
+          key: 'record' + storagePrimaryKey,
+          data: records,
+        })
+      }
+    })
+
+    // 存一个总的记录，记录各等级最短时间等等
+    wx.getStorage({
+      key: 'records',
+      success: function (res) {
+        let records = res.data
+        // 用时短则替换
+        let target = records[storagePrimaryKey]
+        let counts = target.counts
+        let diffValue = (target.recordTime - target.startTime) - (backData.recordTime - backData.startTime)
+        if (diffValue > 0 || (target.recordTime - target.startTime === 0)) {
+          records.splice(storagePrimaryKey, 1, backData)
+        }
+        records[storagePrimaryKey].counts = counts + 1
+
+        wx.setStorage({
+          key: 'records',
+          data: records,
+        })
+      },
+      fail: () => {
+        let records = []
+        for (let i = 0; i < 10; i++) {
+          if (i === storagePrimaryKey) {
+            backData.counts = 1
+            records.push(backData)
+            continue
+          }
+          records.push({
+            startTime: 0,
+            recordTime: 0,
+            counts: 0,
+          })
+        }
+        wx.setStorage({
+          key: 'records',
+          data: records,
+        })
+      }
+    })
+
+    // 存最近50条记录
+    wx.getStorage({
+      key: 'recordLatest',
+      success: function (res) {
+        let records = res.data
+        if (records.length > 50) {
+          records.shift()
+        }
+        records.push(backData)
+        wx.setStorage({
+          key: 'recordLatest',
+          data: records,
+        })
+      },
+      fail: () => {
+        let records = []
+        records.push(backData)
+        wx.setStorage({
+          key: 'recordLatest',
+          data: records,
+        })
+      }
+    })
+    // }
   },
 
   panelTap(e) {
@@ -631,16 +637,26 @@ Page({
 
     // 计算剩余数字
     let leave = this.data.leave.slice()
+    let target = data[boxCoords.y][boxCoords.x]
     if (value === 'x') {
-      let idx = data[boxCoords.y][boxCoords.x].fill
+      let idx = target.fill
       leave[idx - 1] = leave[idx - 1] + 1
+      // } else if (target.fill === target.value){
     } else {
-      leave[value - 1] = leave[value - 1] - 1
+      if (target.fill === '') {
+        leave[value - 1] = leave[value - 1] - 1
+      } else {
+        let idx = parseInt(target.fill)
+        leave[idx - 1] = leave[idx - 1] + 1
+        leave[value - 1] = leave[value - 1] - 1
+      }
     }
 
-    this.isComplete(leave)
 
     data[boxCoords.y][boxCoords.x].fill = (value === 'x') ? '' : value
+
+    this.isComplete(data)
+
     this.setData({
       data: data,
       leave: leave

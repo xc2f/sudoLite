@@ -9,7 +9,7 @@
     <view class='top'>
       <movable-area>
         <movable-view direction="all" x="{{avatarPosition.x}}" y="{{avatarPosition.y}}" out-of-bounds='true' damping='50' inertia='true' bindtouchend="moveAvatarEnd">
-          <image src='https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKlJWibJZnnAWV84jLeh0ajwva1Y80uz5XOjr87EdVqygucvcD1kdJUbRInCckslQP6pJgSvpO2TAw/0' catchtap='tapAvatar' catchlongpress="longTapAvatar"></image>
+          <image src='/images/avatar.jpg' catchtap='tapAvatar' catchlongpress="longTapAvatar"></image>
         </movable-view>
       </movable-area>
       <text catchlongtap='longTapAvatarTitle'>{{avatarTitle.text}}</text>
@@ -17,14 +17,14 @@
     <navigator url="/pages/index/index">
       <view class='row'>sudoku</view>
     </navigator>
-    <navigator url="/pages/setting/index">
-      <view class='row'> 设置</view>
-    </navigator>
     <navigator url="/pages/record/index">
-      <view class='row'>记录</view>
+      <view class='row'>统计</view>
     </navigator>
     <navigator url="/pages/rank/index">
       <view class='row'>排行</view>
+    </navigator>
+    <navigator url="/pages/setting/index">
+      <view class='row'> 设置</view>
     </navigator>
     <navigator url='/pages/about/index'>
       <view class='row'>关于</view>

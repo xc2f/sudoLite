@@ -12,7 +12,9 @@ Page({
     records: [],
     countsAll: 0,
     recordLatest: [],
-    canvasSize: 355
+    canvasSize: 355,
+    showTip1: false,
+    showTip2: false,
   },
 
   /**
@@ -249,7 +251,7 @@ Page({
         })
         this.setData({
           records: list,
-          countsAll: countsAll
+          countsAll: countsAll,
         })
       },
     })
@@ -274,8 +276,6 @@ Page({
     })
   },
 
-
-
   canvasToImg(e) {
     wx.canvasToTempFilePath({
       canvasId: 'myCanvas',
@@ -285,10 +285,28 @@ Page({
           success: function (res) {
             // var savedFilePath = res.savedFilePath
             // show success
+            wx.showToast({
+              title: '保存成功',
+              icon: 'success',
+              duration: 1700
+            })
           }
         })
       }
     })
+  },
+
+  showTip(e) {
+    let type = e.currentTarget.dataset.type
+    if (type === 'tip1') {
+      this.setData({
+        showTip1: true
+      })
+    } else if (type === 'tip2') {
+      this.setData({
+        showTip2: true
+      })
+    }
   },
 
   /**

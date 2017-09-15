@@ -1,5 +1,10 @@
 <!--pages/record/index.wxml-->
-<view class='container'>
+<view class='container' wx:if="{{countsAll}}">
+  <view class='hdBar'>
+    <text class='title'>数据统计</text>
+    <image src='/images/tip.png' bindtap='showTip' data-type="tip1" wx:if="{{!showTip1}}"></image>
+    <text class='tip' wx:if="{{showTip1}}">黄点表示完成的每一局数独，可长按保存到本地</text>
+  </view>
   <canvas canvas-id="myCanvas" bindlongpress='canvasToImg' style="width: {{canvasSize}}px; height: {{canvasSize * .7}}px;background:#fff;" />
   <view class='all'>
 
@@ -25,6 +30,11 @@
       <text>\</text>
     </view>
   </view>
+  <view class='hdBar'>
+    <text class='title'>最新记录</text>
+     <image src='/images/tip.png' bindtap='showTip' data-type="tip2" wx:if="{{!showTip2}}"></image> 
+     <text class='tip' wx:if="{{showTip2}}">记录您最新的50场数独完成情况</text> 
+  </view>
   <view class='records'>
     <view class='thead'>
       <text>记录时间</text>
@@ -39,4 +49,7 @@
       <text>{{item.degree}}</text>
     </view>
   </view>
+</view>
+<view ex:else class='empty'>
+  <text>完成一局数独后再来看看吧</text>
 </view>

@@ -1,10 +1,10 @@
 <!--pages/setting/index.wxml-->
 
 <view class='container'>
-  <view class='hd'>
+  <view class='hdBar'>
     <text class='title'>遮挡比例</text>
     <image src='/images/tip.png' bindtap='showTip' wx:if="{{!showTip}}"></image>
-    <text class='tip' wx:if="{{showTip}}">（需要填入数字的空白格子比例。比例越高，难度越大）</text>
+    <text class='tip' wx:if="{{showTip}}">需要填入数字的空白格子比例。比例越高，难度越大</text>
   </view>
   <view class='bd'>
     <slider class='slider' bindchange="slider2change" activeColor="#f0ad4e" value='{{setDegree}}' show-value/>

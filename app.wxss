@@ -7,6 +7,7 @@
   justify-content: center;  */
    /* padding: 100rpx 0;  */
   box-sizing: border-box;
+  margin: 0 10px;
 } 
 
 button:after {
@@ -20,6 +21,44 @@ button:after {
 .baseBgColor {
   background: #ffc107;
 }
+
+
+.empty {
+  text-align: center;
+  padding-top: 17px;
+}
+
+.empty text {
+  font-size: 14px;
+  color: #777;
+}
+
+
+.hdBar {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #eee;
+}
+
+.hdBar image {
+  width: 17px;
+  height: 17px;
+  /* (50 - 17) / 2 */
+  padding: 17px 17px 17px 7px;
+}
+
+.hdBar .title {
+  font-weight: bold;
+  float: left;
+}
+
+.hdBar .tip {
+  font-size: 10px;
+  color: #777;
+  padding-left: 7px;
+}
+
 
 /* loading */
 .sk-cube-grid {

@@ -3,35 +3,10 @@
 .container {
   justify-content: flex-start;
   align-items: flex-start;
-  margin: 0 10px;
 }
 
 .slider {
   width: 100%;
-}
-
-.hd {
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  border-bottom: 1px solid #eee;
-}
-
-.hd image {
-  width: 17px;
-  height: 17px;
-  /* (50 - 17) / 2 */
-  padding: 17px 17px 17px 7px;
-}
-
-.hd .title {
-  font-weight: bold;
-  float: left;
-}
-
-.hd .tip {
-  font-size: 10px;
-  color: #777;
 }
 
 .bd {
