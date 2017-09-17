@@ -1,6 +1,12 @@
 /* pages/record/index.wxss */
 
 .container {
+
+}
+
+.newRecord {
+  margin-top: 17px;
+  border-bottom: none;
 }
 
 .records > view {
@@ -15,6 +21,7 @@
   border: 1px solid #eee;
   height: 35px;
   line-height: 35px;
+  background: #eee;
 }
 
 .records view.thead text {
@@ -60,4 +67,13 @@
 
 .records view.tbody text:last-child {
   border: none;
+}
+
+.records .total {
+  font-weight: bold;
+  /* background: #eee; */
+}
+
+.records2 {
+  margin-bottom: 10px;
 }

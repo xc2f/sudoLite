@@ -30,3 +30,12 @@ export const computeTime = function (date) {
     s = time % 60 < 10 ? '0' + time % 60 : time % 60
   return m + ':' + s
 }
+
+export const parseTime = function (date) {
+  let time = new Date(date)
+  let minutes = time.getMinutes()
+  let seconds = time.getSeconds()
+  let result = time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.getHours() + ':' + (minutes < 10 ? ('0' + minutes) : minutes) + ':' + (seconds < 10 ? ('0' + seconds) : seconds)
+  console.log(result)
+  return result
+}

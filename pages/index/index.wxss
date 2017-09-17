@@ -56,7 +56,7 @@ page, .container {
   color: #5cb85c;
 }
 
-.box .rcl, .box .showSame {
+.box .rcl, .box .showSame, .box .cbg {
   position: absolute;
   top: 0;
   right: 0;
@@ -76,6 +76,11 @@ page, .container {
 
 .box.show .showSame {
   /* color: #f0ad4e; */
+  background: rgba(255, 193, 7, 0.3);
+}
+
+.box .cbg {
+  transform: scale(0);
   background: rgba(255, 193, 7, 0.3);
 }
 
@@ -236,7 +241,7 @@ page, .container {
 .option {
   position: absolute;
   right: 10px;
-  bottom: 2px;
+  bottom: 5px;
 }
 
 .option image {
@@ -317,12 +322,34 @@ page, .container {
   align-self: flex-start;
 }
 
+.bottom .info {
+  background: #fff;
+  position: relative;
+}
+
+.bottom .info .share {
+  margin-top: -2px;
+  height: calc(100% + 2px);
+  border-top: 2px solid #ddd;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottom .share button {
+  height: 100%;
+  width: 100%;
+  align-self: center;
+}
+
 .scroll {
   /* border: 1px solid #ddd; */
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
+  height: 100%;
 }
 
 .scroll .item > view {
@@ -353,10 +380,12 @@ page, .container {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 /* 负数 */
+
 .scroll .sgmi {
-  text-align: right!important;
-} 
+  text-align: right !important;
+}
 
 .scroll .counts {
   flex: 1.5;
@@ -371,4 +400,17 @@ page, .container {
   margin-top: 3px;
   padding: 2px;
   transform: rotate(7deg);
+}
+
+.completeCanvas {
+  width: 215px;
+  height: 168px;
+  margin: 5px 10px;
+  background: #fff;
+  position: absolute;
+  /* 减去长宽的一半，再减去margin */
+  left: calc(50% - 117px);
+  top: calc(50% - 90px);
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
 }

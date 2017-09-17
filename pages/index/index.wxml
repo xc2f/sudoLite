@@ -76,7 +76,8 @@
           <view class="{{item.show ? (item.duplicate[0] ? 'box duplicate' : 'box show') : 'box blank'}}" data-value='{{item.value}}' data-x="{{item.x}}" data-y="{{item.y}}" data-show="{{item.show}}" catchtap='tapBox' style="width: {{boxSize}}px; height: {{boxSize}}px;">
             <!-- <text wx:if='{{item}}'>{{item}}</text>
           <input wx:else /> -->
-            <view class="{{item.rcl ? (item.showSame ? 'showSame rcl' : 'rcl') : (item.showSame ? 'showSame' : '')}}"></view>
+            <view wx:if="{{!complete}}" class="{{item.rcl ? (item.showSame ? 'showSame rcl' : 'rcl') : (item.showSame ? 'showSame' : '')}}"></view>
+            <view class="cbg" animation="{{item.successAnimation}}"></view>
             <text> {{item.show ? item.value : (item.fill || '')}}</text>
           </view>
         </block>
@@ -87,19 +88,33 @@
     </view>
 
     <view class='bottom'>
-      <scroll-view scroll-y style='height: {{sideSize - 5}}px' class='scroll' wx:if="{{init}}" scroll-into-view="{{toView}}" scroll-with-animation>
-        <view class='wrap'>
-          <view class='item' wx:for="{{leave}}" wx:key="*this" wx:for-index="idx">
-            <view wx:if="{{item}}" style='height: {{(sideSize - 5)/3}}px; line-height: {{(sideSize - 5)/3}}px' id="view{{idx}}" data-idx="{{idx}}" catchtap='tapRowToShowSame'>
-              <view class='index'>{{idx+1}}</view>
-              <view class="{{item>0 ? 'imgs' : 'imgs sgmi'}}">
-                <image wx:for="{{item > 0 ? item : -item}}" wx:key="*this" src="/images/{{idx+1}}.png"></image>
+      <view class="{{complete ? 'info share' : 'info'}}" style='height: {{sideSize - 5}}px'>
+        <scroll-view scroll-y class='scroll' wx:if="{{init}}" scroll-into-view="{{toView}}" scroll-with-animation wx:if="{{!complete}}">
+          <view class='wrap'>
+            <view class='item' wx:for="{{leave}}" wx:key="*this" wx:for-index="idx">
+              <view wx:if="{{item}}" style='height: {{(sideSize - 5)/3}}px; line-height: {{(sideSize - 5)/3}}px' id="view{{idx}}" data-idx="{{idx}}" catchtap='tapRowToShowSame'>
+                <view class='index'>{{idx+1}}</view>
+                <view class="{{item>0 ? 'imgs' : 'imgs sgmi'}}">
+                  <image wx:for="{{item > 0 ? item : -item}}" wx:key="*this" src="/images/{{idx+1}}.png"></image>
+                </view>
+                <view class='counts'>{{item}}</view>
               </view>
-              <view class='counts'>{{item}}</view>
             </view>
           </view>
+        </scroll-view>
+
+        <view class='completeInfo' wx:if="{{complete}}">
+          <!-- complete canvas -->
+          <view class='left' wx:if="{{showCanvasResult}}">
+            <canvas canvas-id="completeCanvas"></canvas>
+          </view>
+          <view class='right'>
+            <button open-type="share">分享战绩</button>
+            <button>重开一局</button>
+          </view>
         </view>
-      </scroll-view>
+
+      </view>
     </view>
 
     <!-- // body -->

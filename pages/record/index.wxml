@@ -10,7 +10,7 @@
 
   </view>
   <view class='statistic'></view>
-  <view class='records'>
+  <view class='records records1'>
     <view class='thead'>
       <text>等级</text>
       <text>总局数</text>
@@ -23,19 +23,19 @@
       <text>{{item.showTime}}</text>
       <text>{{item.recordTime}}</text>
     </view>
-    <view class='tbody'>
+    <view class='tbody total'>
       <text>*总计</text>
       <text>{{countsAll || 0}}</text>
       <text>\</text>
       <text>\</text>
     </view>
   </view>
-  <view class='hdBar'>
+  <view class='hdBar newRecord'>
     <text class='title'>最新记录</text>
      <image src='/images/tip.png' bindtap='showTip' data-type="tip2" wx:if="{{!showTip2}}"></image> 
      <text class='tip' wx:if="{{showTip2}}">记录您最新的50场数独完成情况</text> 
   </view>
-  <view class='records'>
+  <view class='records records2'>
     <view class='thead'>
       <text>记录时间</text>
       <text>用时</text>
@@ -50,6 +50,6 @@
     </view>
   </view>
 </view>
-<view ex:else class='empty'>
+<view wx:else class='empty'>
   <text>完成一局数独后再来看看吧</text>
 </view>

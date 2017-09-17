@@ -5,6 +5,7 @@
 //获取应用实例
 var app = getApp()
 import { adapterDegree } from '../../utils/config.js'
+import { parseTime } from '../../utils/moment.js'
 Page({
   data: {
     // 数组
@@ -71,9 +72,13 @@ Page({
       text: '轻巧数独',
       step: 0
     },
+
+    showCanvasResult: false
     // end data
   },
   degree: .3,
+  percentDegree: '30%',
+  degreeTitle: '幼儿园水平',
   avatarShowTimes: 0,
 
   generateSudokuSuccess: false,
@@ -83,6 +88,8 @@ Page({
   // 数独开始操作时间
   startTime: 0,
   timeInterval: null,
+
+  canvasResult: null,
 
   initArray(type) {
     let array = new Array(9)
@@ -103,6 +110,8 @@ Page({
   onLoad: function () {
     let deviceInfo = app.globalData.deviceInfo
     this.degree = app.globalData.shadeDegree
+    this.percentDegree = parseInt(this.degree * 100) + '%'
+    this.degreeTitle = adapterDegree(this.degree)
     // console.log(deviceInfo)
     this.setData({
       deviceInfo: deviceInfo,
@@ -112,7 +121,7 @@ Page({
     this.initArray('init')
     this.handleGenerateSudoku()
     wx.setNavigationBarTitle({
-      title: adapterDegree(this.degree)
+      title: this.degreeTitle
     })
   },
 
@@ -169,7 +178,8 @@ Page({
           show: true,
           // className: 'box',
           x: idx,
-          y: rowIdx
+          y: rowIdx,
+          successAnimation: {}
         }
       })
     })
@@ -339,7 +349,7 @@ Page({
       drawDx = '30%'
     if (type === 'toClose') {
       toggle = false,
-        menuDx = 10,
+        menuDx = 0,
         menuRotate = 0,
         menuWidth = 20,
         drawDx = '100%'
@@ -463,7 +473,18 @@ Page({
       }
     }
   },
-
+  showCbg() {
+    let data = this.data.data
+    data.map((itemRow, idxRow) => {
+      itemRow.forEach((item, idx) => {
+        // (idx + idxRow) * 50 - 50 => 求 i * j格子的值，即 j + i - 1
+        item.successAnimation = this.basicAnimation(50, (idx + idxRow) * 50 - 50).scale(1).step().export()
+      })
+    })
+    this.setData({
+      data: data
+    })
+  },
 
   isComplete(data, init = false) {
     // console.log(leave)
@@ -494,6 +515,7 @@ Page({
 
     this.clearStyle()
     this.togglePanel(false)
+    this.showCbg()
 
     clearInterval(this.timeInterval)
     let tooltip = this.data.toolTip
@@ -507,6 +529,9 @@ Page({
       complete: true,
       shade: false
     })
+
+    // 绘制结果
+    // this.drawCanvas(showTime)
 
     // 存缓存
     let backData = {
@@ -840,4 +865,61 @@ Page({
   onPullDownRefresh: function () {
     this.handleGenerateSudoku()
   },
+
+  drawCanvas(showTime) {
+    const ctx = wx.createCanvasContext('completeCanvas')
+    ctx.setFontSize(12)
+    ctx.setFillStyle('#222222')
+    ctx.setTextAlign('left')
+    ctx.setTextBaseline('middle')
+    let cw = 215
+    let ch = 168
+    let padding = 20
+    let lineHeight = (ch - 20 - 20) / 4
+    let alignCenter = cw / 2
+    ctx.save()
+    ctx.setFillStyle('#ffffff')
+    ctx.fillRect(0, 0, cw, ch)
+    ctx.restore()
+    ctx.fillText('遮挡比例： ' + this.percentDegree, padding / 2, padding + lineHeight * 1 - lineHeight * .5)
+    ctx.fillText('等级： ' + this.degreeTitle, padding / 2, padding + lineHeight * 2 - lineHeight * .5)
+    ctx.fillText('用时： ' + showTime, padding / 2, padding + lineHeight * 3 - lineHeight * .5)
+    ctx.fillText('完成时间： ' + parseTime(new Date().getTime()), padding / 2, padding + lineHeight * 4 - lineHeight * .5)
+    ctx.draw()
+    wx.canvasToTempFilePath({
+      canvasId: 'completeCanvas',
+      success: res => {
+        this.canvasResult = res.tempFilePath
+      }
+    })
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function (e) {
+    this.setData({
+      showCanvasResult: true
+    })
+    this.drawCanvas('12')
+    let title, img = ''
+    if (e.from === 'button') {
+      title = '我在sudoLite完成了一项挑战，战绩如下：'
+      img = this.canvasResult ? this.canvasResult : ''
+      console.log(img)
+    } else {
+      title = 'Lite.Fun'
+    }
+    return {
+      title: title,
+      path: '/pages/index/index',
+      imageUrl: img,
+      complete: () => {
+        this.setData({
+          showCanvasResult: false
+        })
+      }
+    }
+
+  }
 })
