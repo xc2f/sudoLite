@@ -47,8 +47,8 @@
         <image src="/images/close.png" bindtap='hideOption'></image>
       </view>
       <view wx:if="{{init}}" class="btnGroup">
-        <button class="generate" disabled="{{btnDisabled}}" catchtap="handleGenerateSudoku">重新生成</button>
-        <button class="{{shade ? 'cancleShade' : 'shade'}}" catchtap="toggleShade">{{shade ? '查看结果' : '随机遮挡'}}</button>
+        <button class="bgGreen" disabled="{{btnDisabled}}" catchtap="handleGenerateSudoku">重新生成</button>
+        <button class="{{shade ? 'bgOrange' : 'bgBlue'}}" catchtap="toggleShade">{{shade ? '查看结果' : '随机遮挡'}}</button>
       </view>
     </view>
 
@@ -88,7 +88,9 @@
     </view>
 
     <view class='bottom'>
-      <view class="{{complete ? 'info share' : 'info'}}" style='height: {{sideSize - 5}}px'>
+
+      <view class="{{complete ? 'info result' : 'info'}}" style='height: {{sideSize - 5}}px'>
+
         <scroll-view scroll-y class='scroll' wx:if="{{init}}" scroll-into-view="{{toView}}" scroll-with-animation wx:if="{{!complete}}">
           <view class='wrap'>
             <view class='item' wx:for="{{leave}}" wx:key="*this" wx:for-index="idx">
@@ -103,17 +105,18 @@
           </view>
         </scroll-view>
 
-        <view class='completeInfo' wx:if="{{complete}}">
+        <view class='completeInfo' wx:if="{{showResult}}">
           <!-- complete canvas -->
-          <view class='left' wx:if="{{showCanvasResult}}">
-            <canvas canvas-id="completeCanvas"></canvas>
+          <view class='left' style="width: {{deviceInfo.windowWidth * .7}}px">
+            <canvas canvas-id="canvasResult"></canvas>
           </view>
-          <view class='right'>
-            <button open-type="share">分享战绩</button>
-            <button>重开一局</button>
+          <view class='right' style="width: {{deviceInfo.windowWidth * .3 - 10}}px">
+            <button open-type="share" class="bgOrange" loading='{{resultIsGenerating}}'>{{resultIsGenerating ? '生成中' : '分享成绩'}}</button>
+            <button class='bgGreen' bindtap='handleGenerateSudoku'>再来一局</button>
           </view>
         </view>
 
+        <button wx:if="{{complete && !showResult}}" class='reGenerate' bindtap='handleGenerateSudoku' disabled="{{btnDisabled}}" style="line-height:{{sideSize - 5}}px" >重新生成</button>
       </view>
     </view>
 

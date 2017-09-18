@@ -2,6 +2,11 @@
 
 <view class='container'>
   <view class='hdBar'>
+    <text class='title'>性能优化</text>
+    <image src='/images/tip.png' bindtap='showTip' wx:if="{{!showTip}}"></image>
+    <text class='tip' wx:if="{{showTip}}">需要填入数字的空白格子比例。比例越高，难度越大</text>
+  </view>
+  <view class='hdBar'>
     <text class='title'>遮挡比例</text>
     <image src='/images/tip.png' bindtap='showTip' wx:if="{{!showTip}}"></image>
     <text class='tip' wx:if="{{showTip}}">需要填入数字的空白格子比例。比例越高，难度越大</text>

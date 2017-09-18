@@ -172,38 +172,15 @@ page, .container {
 
 .btnGroup button {
   color: #fff;
-  width: 70px;
-  height: 30px;
+  width: 100px;
+  height: 40px;
   border-radius: 2px;
-  font-size: 12px;
-  line-height: 30px;
+  font-size: 14px;
+  line-height: 40px;
   padding: 0;
   margin: 10px;
 }
 
-.btnGroup .generate {
-  background: #5cb85c;
-}
-
-.btnGroup .generate.button-hover {
-  background: #449d44;
-}
-
-.btnGroup .shade {
-  background: #5bc0de;
-}
-
-.btnGroup .shade.button-hover {
-  background: #31b0d5;
-}
-
-.btnGroup .cancleShade {
-  background: #f0ad4e;
-}
-
-.btnGroup .cancleShade.button-hover {
-  background: #ec971f;
-}
 
 .panel {
   width: 102px;
@@ -254,7 +231,7 @@ page, .container {
   top: 10px;
   left: 10px;
   width: 100%;
-  z-index: 99999;
+  z-index: 9;
 }
 
 .menu text {
@@ -327,20 +304,11 @@ page, .container {
   position: relative;
 }
 
-.bottom .info .share {
+.bottom .info.result {
   margin-top: -2px;
   height: calc(100% + 2px);
   border-top: 2px solid #ddd;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.bottom .share button {
-  height: 100%;
-  width: 100%;
-  align-self: center;
 }
 
 .scroll {
@@ -402,15 +370,35 @@ page, .container {
   transform: rotate(7deg);
 }
 
-.completeCanvas {
-  width: 215px;
-  height: 168px;
-  margin: 5px 10px;
-  background: #fff;
-  position: absolute;
-  /* 减去长宽的一半，再减去margin */
-  left: calc(50% - 117px);
-  top: calc(50% - 90px);
-  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.3);
+.completeInfo {
+  width: 100%;
+  height: 100%;
+}
+
+.completeInfo > view {
+  height: 100%;
+  float: left;
+}
+
+.completeInfo .right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.completeInfo .right button {
+  width: 100%;
+  flex: 1;
+  font-size: 14px;
+  margin: 7px;
+  text-align: center;
+  padding: 0;
   border-radius: 2px;
+  box-shadow: 1px 2px 2px rgba(0, 0, 0, .3);
+  color: #fff;
+}
+
+.reGenerate {
+  height: 100%;
 }

@@ -12,8 +12,8 @@
   <view class='hdBar'>
     <text class='title'>Bug、建议与反馈</text>
   </view>
-  <view class='hdBar'>
+   <view class='hdBar'>
     <text class='title'>版权说明</text>
-  </view>
+  </view> 
   sudoLite v1.1.0
 </view>

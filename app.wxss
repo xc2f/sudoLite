@@ -27,6 +27,38 @@ button:after {
   background: #ffc107;
 }
 
+.bgGreen {
+  background: #5cb85c;
+}
+
+.bgGreen.button-hover {
+  background: #449d44;
+  box-shadow: none;
+}
+
+.bgOrange {
+  background: #f0ad4e;
+}
+
+.bgOrange.button-hover {
+  background: #ec971f;
+  box-shadow: none;
+}
+
+.bgBlue {
+  background: #5bc0de;
+}
+
+.bgBlue.button-hover {
+  background: #31b0d5;
+  box-shadow: none;
+}
+
+
+.btnGroup .cancleShade.button-hover {
+  background: #ec971f;
+}
+
 .empty {
   text-align: center;
   padding-top: 17px;

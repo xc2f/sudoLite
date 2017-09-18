@@ -73,7 +73,10 @@ Page({
       step: 0
     },
 
-    showCanvasResult: false
+    showResult: false,
+    resultIsGenerating: true,
+
+    // showCanvasResult: false
     // end data
   },
   degree: .3,
@@ -109,7 +112,8 @@ Page({
 
   onLoad: function () {
     let deviceInfo = app.globalData.deviceInfo
-    this.degree = app.globalData.shadeDegree
+    // this.degree = app.globalData.shadeDegree
+    this.degree = wx.getStorageSync('shadeDegree') || app.globalData.shadeDegree
     this.percentDegree = parseInt(this.degree * 100) + '%'
     this.degreeTitle = adapterDegree(this.degree)
     // console.log(deviceInfo)
@@ -128,7 +132,15 @@ Page({
   reset() {
     // reset
     clearInterval(this.timeInterval)
+    let data = this.data.data
+    data.map((itemRow, idxRow) => {
+      itemRow.map((item, idx) => {
+        // 从右下角退回
+        item.successAnimation = this.basicAnimation(50, (8 - idx + 8 - idxRow) * 50 - 50).scale(0).step().export()
+      })
+    })
     this.setData({
+      data: data,
       generateOk: false,
       leave: [9, 9, 9, 9, 9, 9, 9, 9, 9],
       toolTip: {
@@ -137,7 +149,8 @@ Page({
       },
       btnDisabled: true,
       shade: true,
-      complete: false
+      complete: false,
+      showResult: false,
     })
   },
 
@@ -258,7 +271,8 @@ Page({
     return resultList[Math.floor(Math.random() * resultList.length)]
   },
 
-  toggleShade(newData, from = 'btn') {
+  toggleShade(newData, from = 'btn', callback) {
+    // console.log('in')
     // 点击事件默认传递一个事件对象，当参数是数组时表示初始化，并且为遮挡状态
     let isArray = newData instanceof Array
     let templist = isArray ? newData : this.data.data
@@ -276,6 +290,8 @@ Page({
         leave[leaveIdx] = item.show ? leave[leaveIdx] - 1 : leave[leaveIdx]
       })
     ))
+
+
 
     if (from === 'init') {
       // init时如果完成数独不记录
@@ -303,7 +319,6 @@ Page({
     if (this.data.toolTip.type === 'timing') {
       return
     }
-
     this.startTime = new Date().getTime()
     let m, s
     this.timeInterval = setInterval(() => {
@@ -473,6 +488,7 @@ Page({
       }
     }
   },
+
   showCbg() {
     let data = this.data.data
     data.map((itemRow, idxRow) => {
@@ -486,6 +502,8 @@ Page({
     })
   },
 
+
+
   isComplete(data, init = false) {
     // console.log(leave)
     // let result = leave.reduce((p, n) => p + n)
@@ -493,7 +511,7 @@ Page({
     // item为show不检查为false
     // item不为show的情况下item.fill为空为true, item.fill !== item.valueweitrue
     let unComplete = data.some(itemRow => (itemRow.some(item => (!item.show ? (item.fill ? (item.fill !== item.value) : true) : false))))
-    console.log(unComplete)
+    // console.log(unComplete)
     if (unComplete) {
       return
     }
@@ -527,11 +545,12 @@ Page({
     this.setData({
       toolTip: tooltip,
       complete: true,
-      shade: false
+      shade: false,
+      showResult: true
     })
 
     // 绘制结果
-    // this.drawCanvas(showTime)
+    this.drawCanvas(showTime)
 
     // 存缓存
     let backData = {
@@ -867,29 +886,62 @@ Page({
   },
 
   drawCanvas(showTime) {
-    const ctx = wx.createCanvasContext('completeCanvas')
+    const ctx = wx.createCanvasContext('canvasResult')
     ctx.setFontSize(12)
     ctx.setFillStyle('#222222')
     ctx.setTextAlign('left')
     ctx.setTextBaseline('middle')
-    let cw = 215
-    let ch = 168
-    let padding = 20
-    let lineHeight = (ch - 20 - 20) / 4
+    let cw = this.data.deviceInfo.windowWidth * .7
+    let ch = this.data.sideSize - 5
+    let padding = 10
+    let lineHeight = (ch - 10 - 10) / 4
     let alignCenter = cw / 2
     ctx.save()
     ctx.setFillStyle('#ffffff')
     ctx.fillRect(0, 0, cw, ch)
     ctx.restore()
-    ctx.fillText('遮挡比例： ' + this.percentDegree, padding / 2, padding + lineHeight * 1 - lineHeight * .5)
-    ctx.fillText('等级： ' + this.degreeTitle, padding / 2, padding + lineHeight * 2 - lineHeight * .5)
-    ctx.fillText('用时： ' + showTime, padding / 2, padding + lineHeight * 3 - lineHeight * .5)
-    ctx.fillText('完成时间： ' + parseTime(new Date().getTime()), padding / 2, padding + lineHeight * 4 - lineHeight * .5)
+    ctx.fillText('遮挡比例： ' + this.percentDegree, padding * 2, padding + lineHeight * 1 - lineHeight * .5)
+    ctx.fillText('等级： ' + this.degreeTitle, padding * 2, padding + lineHeight * 2 - lineHeight * .5)
+    ctx.fillText('用时： ' + showTime, padding * 2, padding + lineHeight * 3 - lineHeight * .5)
+    ctx.fillText('完成时间： ' + parseTime(new Date().getTime()), padding * 2, padding + lineHeight * 4 - lineHeight * .5)
+    ctx.save()
+    ctx.beginPath()
+    ctx.setStrokeStyle('#ffc107')
+    ctx.setLineWidth(2 * 2)
+    // 6为字体大小的一半
+    ctx.moveTo(padding, padding + lineHeight * 1 - lineHeight * .5 - 6)
+    ctx.lineTo(padding, padding + lineHeight * 4 - lineHeight * .5 + 6)
+    ctx.stroke()
+    ctx.restore()
     ctx.draw()
+
+    this.generateResult(this.data.sideSize - 5)
+  },
+  generateResult(height) {
+    // 最长一行时间的宽度大概为200
+    // 为防止底部黑边，拉伸图片，比例为分享图片比例
     wx.canvasToTempFilePath({
-      canvasId: 'completeCanvas',
+      canvasId: 'canvasResult',
+      x: 0,
+      y: 0,
+      width: 210,
+      height: height,
+      destWidth: 210,
+      destHeight: 210 / 1.27,
       success: res => {
+        // console.log(res)
+        // let pic =
         this.canvasResult = res.tempFilePath
+
+        this.setData({
+          resultIsGenerating: false
+        })
+      },
+      fail: res => {
+        // console.log(res)
+        setTimeout(() => {
+          this.generateResult(height)
+        }, 100)
       }
     })
   },
@@ -898,15 +950,11 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (e) {
-    this.setData({
-      showCanvasResult: true
-    })
-    this.drawCanvas('12')
     let title, img = ''
     if (e.from === 'button') {
-      title = '我在sudoLite完成了一项挑战，战绩如下：'
       img = this.canvasResult ? this.canvasResult : ''
-      console.log(img)
+      title = '我在sudoLite完成了一项挑战，战绩如下：'
+      // console.log(img)
     } else {
       title = 'Lite.Fun'
     }
@@ -914,11 +962,6 @@ Page({
       title: title,
       path: '/pages/index/index',
       imageUrl: img,
-      complete: () => {
-        this.setData({
-          showCanvasResult: false
-        })
-      }
     }
 
   }
