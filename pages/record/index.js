@@ -15,34 +15,51 @@ Page({
     canvasSize: 355,
     showTip1: false,
     showTip2: false,
+    loadingTip: '数据读取中...'
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // 显示当前设定等级的canvas
     this.setData({
-      canvasSize: app.globalData.deviceInfo.screenWidth - 20
-    })
-    this.getData(res => {
-      res.map(item => {
-        item.shadeDegree = parseInt(item.shadeDegree * 100)
-        item.useTime = item.recordTime - item.startTime
-      })
-      console.log(res)
-      this.drawCanvas(res, [0, 10])
+      canvasSize: app.globalData.deviceInfo.screenWidth - 20,
     })
 
+    // 显示当前设定等级的canvas
+    let currentDegree = app.globalData.shadeDegree
+    this.drawCanvas(currentDegree)
+    this.renderRecords(currentDegree)
+    this.renderLastRecords()
   },
 
-  drawCanvas(data, range) {
+  drawCanvas(degree) {
+    let range = adapterDegree(degree, 'range')
+    let title = adapterDegree(degree)
+    let storagePrimaryKey = range[1] / 10 - 1
+    wx.getStorage({
+      key: 'record' + storagePrimaryKey,
+      success: res => {
+        let list = []
+        res.data.map(item => {
+          list.push({
+            shadeDegree: parseInt(item.shadeDegree * 100),
+            useTime: item.recordTime - item.startTime
+          })
+        })
+        this.draw(list, range, title)
+      },
+    })
+  },
+
+  draw(data, range, title) {
     const ctx = wx.createCanvasContext('myCanvas')
     ctx.setFontSize(10)
     ctx.setFillStyle('#777777')
     let axisXData = range
     let cw = this.data.canvasSize
     let ch = this.data.canvasSize * .7
+    ctx.clearRect(0, 0, cw, ch)
     // 刻度大小
     let tickSize = 3
     let devideY = 7 // 7个刻度
@@ -174,7 +191,7 @@ Page({
     ctx.save()
     ctx.setFontSize(12)
     ctx.fillText(
-      adapterDegree(app.globalData.shadeDegree),
+      title,
       bottomRight.x,
       topLeft.y)
 
@@ -185,7 +202,7 @@ Page({
     if (data.length < 17) {
       arcRadius = 2
     }
-    console.log(data)
+    // console.log(data)
     data.map((item, idx) => {
       ctx.beginPath()
       // 在一个avgWidth左右范围内随机x坐标
@@ -215,25 +232,9 @@ Page({
     }
   },
 
-  getData(callback) {
-    // canvas
-    let range = adapterDegree(app.globalData.shadeDegree, 'range')
-    let storagePrimaryKey = range[1] / 10 - 1
-    wx.getStorage({
-      key: 'record' + storagePrimaryKey,
-      success: res => {
-        let list = []
-        res.data.map(item => {
-          list.push({
-            shadeDegree: parseInt(item.shadeDegree * 100),
-            useTime: item.recordTime - item.startTime
-          })
-        })
-        this.drawCanvas(list, range)
-      },
-    })
-
+  renderRecords(degree){
     // records
+    let range = adapterDegree(degree, 'range')
     wx.getStorage({
       key: 'records',
       success: res => {
@@ -241,21 +242,27 @@ Page({
         let countsAll = 0
         console.log(res.data)
         res.data.map(item => {
+          let shade = parseInt(item.shadeDegree * 100)
+          let selected = (shade >= range[0] && shade <= range[1]) ? true : false
           list.push({
             degree: adapterDegree(item.shadeDegree),
             counts: item.counts,
             showTime: item.showTime,
             recordTime: fromNow(item.recordTime),
+            selected: selected
           })
           countsAll += item.counts
         })
         this.setData({
           records: list,
           countsAll: countsAll,
+          loadingTip: countsAll === 0 ? '请完成一局数独再来看看吧' : '读取成功，数据渲染中...'
         })
       },
     })
+  },
 
+  renderLastRecords() {
     // 最近50条记录
     wx.getStorage({
       key: 'recordLatest',
@@ -307,6 +314,15 @@ Page({
         showTip2: true
       })
     }
+  },
+
+  drawItem(e) {
+    let idx = e.currentTarget.dataset.idx
+    // degree值为0，1，2，3，4，5，6，7，8，9
+    // 为0的时候避免判断为false, 1的时候为第二级，避免为1成为第一级
+    let degree = idx === 0 ? 0.1 : idx * .11
+    this.drawCanvas(degree)
+    this.renderRecords(degree)
   },
 
   /**

@@ -74,13 +74,15 @@ button:after {
   height: 50px;
   line-height: 50px;
   border-bottom: 1px solid #eee;
+  clear: both;
 }
 
 .hdBar image {
   width: 17px;
   height: 17px;
   /* (50 - 17) / 2 */
-  padding: 17px 17px 17px 7px;
+  padding: 17px 7px 17px 7px;
+  float: left;
 }
 
 .hdBar .title {
@@ -91,7 +93,20 @@ button:after {
 .hdBar .tip {
   font-size: 10px;
   color: #777;
-  padding-left: 7px;
+}
+
+.hdBar .right {
+  float: right;
+}
+
+/* body */
+
+.tbody.selected {
+  font-weight: bold;
+  color: #ffc107;
+}
+.view-hover {
+  background: rgba(255, 193, 7, .3);
 }
 
 /* loading */

@@ -31,6 +31,7 @@ Page({
       dy: -102
     },
     panelShowAnimation: {},
+    showPanel: false,
 
     boxCoords: {
       x: 0,
@@ -76,6 +77,8 @@ Page({
     showResult: false,
     resultIsGenerating: true,
 
+    optimization: false
+
     // showCanvasResult: false
     // end data
   },
@@ -86,7 +89,7 @@ Page({
 
   generateSudokuSuccess: false,
   // 回退
-  history: [],
+  // history: [],
 
   // 数独开始操作时间
   startTime: 0,
@@ -121,6 +124,7 @@ Page({
       deviceInfo: deviceInfo,
       boxSize: (deviceInfo.windowWidth) / 9,
       sideSize: (deviceInfo.windowHeight - deviceInfo.windowWidth) / 2,
+      optimization: app.globalData.optimization
     })
     this.initArray('init')
     this.handleGenerateSudoku()
@@ -133,12 +137,17 @@ Page({
     // reset
     clearInterval(this.timeInterval)
     let data = this.data.data
-    data.map((itemRow, idxRow) => {
-      itemRow.map((item, idx) => {
-        // 从右下角退回
-        item.successAnimation = this.basicAnimation(50, (8 - idx + 8 - idxRow) * 50 - 50).scale(0).step().export()
+    if (data[0][0] === undefined) {
+      return
+    }
+    if (!this.data.optimization) {
+      data.map((itemRow, idxRow) => {
+        itemRow.map((item, idx) => {
+          // 从右下角退回
+          item.successAnimation = this.basicAnimation(50, (8 - idx + 8 - idxRow) * 50 - 50).scale(0).step().export()
+        })
       })
-    })
+    }
     this.setData({
       data: data,
       generateOk: false,
@@ -297,6 +306,7 @@ Page({
       // init时如果完成数独不记录
       this.isComplete(templist, true)
     } else {
+      // 查看结果后处理办法
       let tooltip = this.data.toolTip
       tooltip = {
         type: 'end',
@@ -380,13 +390,24 @@ Page({
   },
 
   togglePanel(toShow) {
-    let scale = 0
-    if (toShow) {
-      scale = 1
+    if (this.data.optimization) {
+      if (!toShow) {
+        this.setData({
+          panelPosition: {
+            dx: -102,
+            dy: -102
+          },
+        })
+      }
+    } else {
+      let scale = 0
+      if (toShow) {
+        scale = 1
+      }
+      this.setData({
+        panelShowAnimation: this.basicAnimation(200).scale(scale).step().export()
+      })
     }
-    this.setData({
-      panelShowAnimation: this.basicAnimation(200).scale(scale).step().export()
-    })
   },
 
   clearStyle() {
@@ -436,10 +457,11 @@ Page({
     }
 
     // 激活的哪个box
+
+    let data = this.data.data
     let boxCoords = this.data.boxCoords
     boxCoords.x = e.currentTarget.dataset.x
     boxCoords.y = e.currentTarget.dataset.y
-    let data = this.data.data
     data.map((rowItem, rowIdx) => {
       rowItem.map((item, idx) => {
         item.rcl = false
@@ -533,7 +555,8 @@ Page({
 
     this.clearStyle()
     this.togglePanel(false)
-    this.showCbg()
+
+    this.data.optimization ? '' : this.showCbg()
 
     clearInterval(this.timeInterval)
     let tooltip = this.data.toolTip
@@ -709,15 +732,15 @@ Page({
     this.togglePanel(false)
 
     // 最多存100条记录
-    if (this.history.length === 100) {
-      this.history.pop()
-    }
+    // if (this.history.length === 100) {
+    //   this.history.pop()
+    // }
 
-    this.history.push({
-      boxCoords: boxCoords,
-      data: data[boxCoords.y][boxCoords.x],
-      panelValue: value
-    })
+    // this.history.push({
+    //   boxCoords: boxCoords,
+    //   data: data[boxCoords.y][boxCoords.x],
+    //   panelValue: value
+    // })
 
   },
 
@@ -783,9 +806,10 @@ Page({
   },
 
   showOption() {
-    this.setData({
-      showOptionAnimation: this.basicAnimation().scale(1).step().export()
-    })
+    this.
+      this.setData({
+        showOptionAnimation: this.basicAnimation().scale(1).step().export()
+      })
   },
   hideOption() {
     this.setData({
@@ -893,6 +917,7 @@ Page({
     ctx.setTextBaseline('middle')
     let cw = this.data.deviceInfo.windowWidth * .7
     let ch = this.data.sideSize - 5
+    ctx.clearRect(0, 0, cw, ch)
     let padding = 10
     let lineHeight = (ch - 10 - 10) / 4
     let alignCenter = cw / 2

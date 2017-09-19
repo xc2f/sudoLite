@@ -10,43 +10,66 @@ Page({
   data: {
     setDegree: 30,
     degree: [],
-    showTip: false,
+    showTip1: false,
+    showTip2: false,
+    optimizationChecked: false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let shade = parseInt(app.globalData.shadeDegree * 100)
     this.setData({
-      setDegree: parseInt(app.globalData.shadeDegree * 100)
+      setDegree: shade,
+      optimizationChecked: app.globalData.optimization
     })
-    this.parseDegree()
+    this.parseDegree(shade)
   },
 
-  slider2change(e) {
-    let degree = parseFloat(e.detail.value * .01)
-    wx.setStorage({
-      key: 'shadeDegree',
-      data: degree,
-    })
-    console.log(degree)
-    app.globalData.shadeDegree = degree
-  },
-
-  parseDegree() {
+  parseDegree(shade) {
     let degreeData = deepCopy(degree)
     degreeData.map(item => {
+      if(shade >= item.range[0] && shade <= item.range[1]){
+        item.selected = true
+      } else {
+        item.selected = false
+      }
       item.range = (item.range[0] !== 0 ? (item.range[0] + '%') : 0) + ' ~ ' + item.range[1] + '%'
     })
     this.setData({
       degree: degreeData
     })
-
   },
 
-  showTip: function(){
+  slider2change(e) {
+    let value = e.detail.value
+    this.parseDegree(value)
+    let degree = parseFloat(value * .01)
+    wx.setStorage({
+      key: 'shadeDegree',
+      data: degree,
+    })
+    app.globalData.shadeDegree = degree
+  },
+
+  showTip1: function () {
     this.setData({
-      showTip: true
+      showTip1: true
+    })
+  },
+  showTip2: function () {
+    this.setData({
+      showTip2: true
+    })
+  },
+
+  changeOptimization(e) {
+    let result = e.detail.value
+    app.globalData.optimization = result
+    wx.setStorage({
+      key: 'optimization',
+      data: result,
     })
   },
 
