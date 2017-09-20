@@ -99,6 +99,14 @@ button:after {
   float: right;
 }
 
+.bdContent {
+  text-indent: 1em;
+  font-size: 14px;
+  color: #555;
+  padding: 10px 0;
+  line-height: 2
+}
+
 /* body */
 
 .tbody.selected {

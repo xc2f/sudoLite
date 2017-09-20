@@ -3,17 +3,36 @@
   <view class='hdBar'>
     <text class='title'>怎样玩？</text>
   </view>
+  <view style="width:{{windowWidth}}px; height:{{windowWidth * 1.7}}px">
+    <image src='/images/demo.jpg'></image>
+  </view>
   <view class='hdBar'>
     <text class='title'>数据存储说明</text>
+  </view>
+  <view class='bdContent'>
+    目前，在完成每一局数独的情况下，您的成绩会缓存在本地，删除sudoLite、卸载微信均会使您成绩数据丢失。在下一版本，会提供上传备份“生涯统计”的功能。
   </view>
   <view class='hdBar'>
     <text class='title'>用户信息与隐私说明</text>
   </view>
+  <view class='bdContent'>
+    由于微信小程序严格的限制，sudoLite现在、将来不会在未经您本人允许的情况下获取您任何信息，请放心使用。
+  </view>
   <view class='hdBar'>
     <text class='title'>Bug、建议与反馈</text>
   </view>
-   <view class='hdBar'>
+  <view class='bdContent'>
+    Email: hellowd93@163.com
+  </view>
+  <view class='hdBar'>
     <text class='title'>版权说明</text>
-  </view> 
-  sudoLite v1.1.0
+  </view>
+  <view class='bdContent'>
+    <view>Repo: https://github.com/Pysics/sudoLite</view>
+    <view>License: MIT</view>
+  </view>
+  <view class='footer'>
+    <view>sudoLite v1.1.0</view>
+    <view>© 2017{{currentYear}} Lite.Fun</view>
+  </view>
 </view>

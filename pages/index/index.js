@@ -28,7 +28,7 @@ Page({
     // panel位置
     panelPosition: {
       dx: -102,
-      dy: -102
+      dy: -112
     },
     panelShowAnimation: {},
     showPanel: false,
@@ -70,7 +70,7 @@ Page({
       y: 25
     },
     avatarTitle: {
-      text: '轻巧数独',
+      text: 'sudoLite',
       step: 0
     },
 
@@ -93,9 +93,12 @@ Page({
 
   // 数独开始操作时间
   startTime: 0,
+  pauseTime: 0,
+
   timeInterval: null,
 
   canvasResult: null,
+
 
   initArray(type) {
     let array = new Array(9)
@@ -115,8 +118,7 @@ Page({
 
   onLoad: function () {
     let deviceInfo = app.globalData.deviceInfo
-    // this.degree = app.globalData.shadeDegree
-    this.degree = wx.getStorageSync('shadeDegree') || app.globalData.shadeDegree
+    this.degree = app.globalData.shadeDegree
     this.percentDegree = parseInt(this.degree * 100) + '%'
     this.degreeTitle = adapterDegree(this.degree)
     // console.log(deviceInfo)
@@ -148,6 +150,10 @@ Page({
         })
       })
     }
+    this.startTime = 0
+    this.pauseTime = 0
+    this.timeInterval = null
+    this.canvasResult = null
     this.setData({
       data: data,
       generateOk: false,
@@ -160,6 +166,8 @@ Page({
       shade: true,
       complete: false,
       showResult: false,
+      resultIsGenerating: true,
+      toView: 'view0'
     })
   },
 
@@ -329,10 +337,11 @@ Page({
     if (this.data.toolTip.type === 'timing') {
       return
     }
-    this.startTime = new Date().getTime()
+    this.startTime = this.startTime || new Date().getTime()
     let m, s
     this.timeInterval = setInterval(() => {
-      let time = Math.round((new Date().getTime() - this.startTime) / 1000)
+      this.pauseTime ? this.pauseTime += 1000 : ''
+      let time = Math.round(((this.pauseTime || new Date().getTime()) - this.startTime) / 1000)
       m = Math.floor(time / 60)
       s = time % 60 < 10 ? '0' + time % 60 : time % 60
       let tooltip = {
@@ -343,6 +352,23 @@ Page({
         toolTip: tooltip
       })
     }, 1000)
+  },
+
+  pause() {
+    clearInterval(this.timeInterval)
+    this.pauseTime = this.pauseTime || (new Date().getTime())
+    // console.log(this.pauseTime)
+    let tooltip = this.data.toolTip
+    this.setData({
+      toolTip: {
+        type: 'pause',
+        content: '用时' + tooltip.content + ', 已暂停'
+      }
+    })
+  },
+
+  carryon() {
+    this.timing()
   },
 
   basicAnimation(duration, delay) {
@@ -395,7 +421,7 @@ Page({
         this.setData({
           panelPosition: {
             dx: -102,
-            dy: -102
+            dy: -112
           },
         })
       }
@@ -431,13 +457,19 @@ Page({
     let value = e.currentTarget.dataset.value
 
     if (show) {
-      this.togglePanel(false)
-      this.showSame(true, value)
-      this.setData({
-        toView: 'view' + (value - 1)
-      })
+      if (this.data.panelPosition.dx !== -102) {
+        // 如果点show的格子，panel还开着，先不显示相同数字
+        this.togglePanel(false)
+      } else {
+        this.togglePanel(false)
+        this.showSame(true, value)
+        this.setData({
+          toView: 'view' + (value - 1)
+        })
+      }
       return
     }
+
     this.showSame(false)
     this.timing()
 
@@ -574,11 +606,12 @@ Page({
 
     // 绘制结果
     this.drawCanvas(showTime)
-
     // 存缓存
+    let now = new Date().getTime()
     let backData = {
       startTime: this.startTime,
-      recordTime: new Date().getTime(),
+      recordTime: now,
+      timeUse: this.pauseTime ? (this.pauseTime - this.startTime) : (now - this.startTime),
       showTime: showTime,
       shadeDegree: app.globalData.shadeDegree
     }
@@ -614,7 +647,7 @@ Page({
         // 用时短则替换
         let target = records[storagePrimaryKey]
         let counts = target.counts
-        let diffValue = (target.recordTime - target.startTime) - (backData.recordTime - backData.startTime)
+        let diffValue = (target.timeUse) - (backData.timeUse)
         if (diffValue > 0 || (target.recordTime - target.startTime === 0)) {
           records.splice(storagePrimaryKey, 1, backData)
         }
@@ -806,10 +839,9 @@ Page({
   },
 
   showOption() {
-    this.
-      this.setData({
-        showOptionAnimation: this.basicAnimation().scale(1).step().export()
-      })
+    this.setData({
+      showOptionAnimation: this.basicAnimation().scale(1).step().export()
+    })
   },
   hideOption() {
     this.setData({
@@ -854,7 +886,7 @@ Page({
     })
     // 超过三次后不再进行对话
     if (this.avatarShowTimes > 3) {
-      this.tapAvatarShowTitle('轻巧数独', 0, 1500, null)
+      this.tapAvatarShowTitle('sudoLite', 0, 1500, null)
       return
     }
     this.tapAvatarShowTitle('......', 2, 1000, null)
@@ -898,7 +930,7 @@ Page({
     let step = this.data.avatarTitle.step
     if (step === 8 || step === 9) {
       this.tapAvatarShowTitle('谢谢o(*￣▽￣*)ブ', 10, 0, res => {
-        this.tapAvatarShowTitle('轻巧数独', 0, 0, null)
+        this.tapAvatarShowTitle('sudoLite', 0, 0, null)
       })
     }
   },
@@ -988,6 +1020,5 @@ Page({
       path: '/pages/index/index',
       imageUrl: img,
     }
-
   }
 })

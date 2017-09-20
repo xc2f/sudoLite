@@ -44,7 +44,7 @@ Page({
         res.data.map(item => {
           list.push({
             shadeDegree: parseInt(item.shadeDegree * 100),
-            useTime: item.recordTime - item.startTime
+            useTime: item.timeUse
           })
         })
         this.draw(list, range, title)

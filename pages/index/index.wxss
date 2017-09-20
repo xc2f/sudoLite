@@ -215,6 +215,39 @@ page, .container {
   color: #fff;
 }
 
+.pause {
+  position: absolute;
+  left: calc(50% - 2px - 4px - 2px);
+  bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.pause text {
+  width: 4px;
+  height: 16px;
+  background: #fff;
+  display: block;
+  margin: 2px;
+}
+
+.carry-on {
+  position: absolute;
+  /* 定位在width, 为0，所以减去border的一半即可 */
+  left: calc(50% - 4px);
+  bottom: 10px;
+  width: 0;
+  height: 0;
+  border-width: 8px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: #fff;
+  border-style: solid;
+}
+
 .option {
   position: absolute;
   right: 10px;

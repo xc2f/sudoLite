@@ -15,7 +15,7 @@
       <text catchlongtap='longTapAvatarTitle'>{{avatarTitle.text}}</text>
     </view>
     <navigator url="/pages/index/index">
-      <view class='row'>sudoku</view>
+      <view class='row'>数独</view>
     </navigator>
     <navigator url="/pages/record/index">
       <view class='row'>统计</view>
@@ -59,7 +59,12 @@
         <text animation="{{menuAnimationBottom}}"></text>
       </view>
       <view class='toolTip'>{{toolTip.content}}</view>
-
+       <view class='pause' bindtap='pause' wx:if="{{toolTip.type==='timing'}}">
+        <text></text>
+        <text></text>
+      </view> 
+       <view class='carry-on' bindtap='carryon' wx:if="{{toolTip.type==='pause'}}">
+      </view> 
       <view class='option' bindtap='showOption'>
         <image src="/images/option.png"></image>
       </view>
@@ -116,7 +121,7 @@
           </view>
         </view>
 
-        <button wx:if="{{complete && !showResult}}" class='reGenerate' bindtap='handleGenerateSudoku' disabled="{{btnDisabled}}" style="line-height:{{sideSize - 5}}px" >重新生成</button>
+        <button wx:if="{{complete && !showResult}}" class='reGenerate' bindtap='handleGenerateSudoku' disabled="{{btnDisabled}}" style="line-height:{{sideSize - 5}}px">重新生成</button>
       </view>
     </view>
 
