@@ -17,7 +17,7 @@
       <text>最短用时</text>
       <text>时间</text>
     </view>
-    <block wx:for="{{records}}" wx:if="{{item.counts}}" wx:key="recordTime">
+    <block wx:for="{{records}}" wx:if="{{item.counts}}" wx:key="showTime">
       <view class="{{item.selected ? 'tbody selected' : 'tbody'}}" bindtap='drawItem' data-idx="{{index}}" hover-class="view-hover">
         <text>{{item.degree}}</text>
         <text>{{item.counts}}</text>
@@ -44,7 +44,7 @@
       <text>遮挡比例</text>
       <text>等级</text>
     </view>
-    <view class='tbody' wx:for="{{recordLatest}}" wx:key="recordTime">
+    <view class='tbody' wx:for="{{recordLatest}}" wx:key="showTime">
       <text>{{item.recordTime}}</text>
       <text>{{item.showTime}}</text>
       <text>{{item.shadeDegree}}</text>

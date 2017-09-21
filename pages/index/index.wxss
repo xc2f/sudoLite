@@ -330,6 +330,11 @@ page, .container {
   line-height: 45px;
   font-size: 14px;
   align-self: flex-start;
+  border-bottom: none;
+}
+.container .drawer .row.hover {
+  /* background: rgba(255, 193, 7, .3) */
+  background: #eee;
 }
 
 .bottom .info {

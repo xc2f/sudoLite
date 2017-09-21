@@ -14,28 +14,28 @@
       </movable-area>
       <text catchlongtap='longTapAvatarTitle'>{{avatarTitle.text}}</text>
     </view>
-    <navigator url="/pages/index/index">
-      <view class='row'>数独</view>
-    </navigator>
-    <navigator url="/pages/record/index">
-      <view class='row'>统计</view>
-    </navigator>
-    <navigator url="/pages/rank/index">
-      <view class='row'>排行</view>
-    </navigator>
-    <navigator url="/pages/setting/index">
-      <view class='row'> 设置</view>
-    </navigator>
-    <navigator url='/pages/about/index'>
-      <view class='row'>关于</view>
-    </navigator>
+    <!-- <navigator url="/pages/index/index"> -->
+      <view class='row' bindtap='route' data-type='index' hover-class='hover' hover-start-time='0' hover-stay-time='170'>数独</view>
+    <!-- </navigator> -->
+    <!-- <navigator url="/pages/record/index"> -->
+      <view class='row' bindtap='route' data-type='record' hover-class='hover' hover-start-time='0' hover-stay-time='170'>统计</view>
+    <!-- </navigator> -->
+    <!-- <navigator url="/pages/rank/index"> -->
+      <view class='row' bindtap='route' data-type='rank' hover-class='hover' hover-start-time='0' hover-stay-time='170'>排行</view>
+    <!-- </navigator> -->
+    <!-- <navigator url="/pages/setting/index"> -->
+      <view class='row' bindtap='route' data-type='setting' hover-class='hover' hover-start-time='0' hover-stay-time='170'> 设置</view>
+    <!-- </navigator> -->
+    <!-- <navigator url='/pages/about/index'> -->
+      <view class='row' bindtap='route' data-type='about' hover-class='hover' hover-start-time='0' hover-stay-time='170'>关于</view>
+    <!-- </navigator> -->
   </view>
 
   <view class="body">
     <view class='shadow' wx:if="{{drawerToggle}}" bindtap='closeDrawer'></view>
     <!-- 浮层 -->
     <view class='panel' style="top: {{panelPosition.dy}}px; left: {{panelPosition.dx}}px;" animation="{{panelShowAnimation}}">
-      <block wx:for="{{panelData}}" wx:key="*this">
+      <block wx:for="{{panelData}}" wx:key="item*this">
         <view catchtap='panelTap' data-value="{{item}}">{{item}}</view>
       </block>
     </view>
@@ -98,11 +98,11 @@
 
         <scroll-view scroll-y class='scroll' wx:if="{{init}}" scroll-into-view="{{toView}}" scroll-with-animation wx:if="{{!complete}}">
           <view class='wrap'>
-            <view class='item' wx:for="{{leave}}" wx:key="*this" wx:for-index="idx">
+            <view class='item' wx:for="{{leave}}" wx:key="item*this" wx:for-index="idx">
               <view wx:if="{{item}}" style='height: {{(sideSize - 5)/3}}px; line-height: {{(sideSize - 5)/3}}px' id="view{{idx}}" data-idx="{{idx}}" catchtap='tapRowToShowSame'>
                 <view class='index'>{{idx+1}}</view>
                 <view class="{{item>0 ? 'imgs' : 'imgs sgmi'}}">
-                  <image wx:for="{{item > 0 ? item : -item}}" wx:key="*this" src="/images/{{idx+1}}.png"></image>
+                  <image wx:for="{{item > 0 ? item : -item}}" wx:key="item*this" src="/images/{{idx+1}}.png"></image>
                 </view>
                 <view class='counts'>{{item}}</view>
               </view>

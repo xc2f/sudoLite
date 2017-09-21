@@ -233,6 +233,7 @@ Page({
   },
 
   renderRecords(degree){
+    // console.log('in')
     // records
     let range = adapterDegree(degree, 'range')
     wx.getStorage({
@@ -240,7 +241,7 @@ Page({
       success: res => {
         let list = []
         let countsAll = 0
-        console.log(res.data)
+        // console.log(res.data)
         res.data.map(item => {
           let shade = parseInt(item.shadeDegree * 100)
           let selected = (shade >= range[0] && shade <= range[1]) ? true : false
@@ -259,6 +260,11 @@ Page({
           loadingTip: countsAll === 0 ? '请完成一局数独再来看看吧' : '读取成功，数据渲染中...'
         })
       },
+      fail: () => {
+        this.setData({
+          loadingTip: '请完成一局数独再来看看吧'
+        })
+      }
     })
   },
 
@@ -267,6 +273,7 @@ Page({
     wx.getStorage({
       key: 'recordLatest',
       success: res => {
+        // console.log(res)
         let list = []
         res.data.map(item => {
           list.unshift({
@@ -370,7 +377,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  // onShareAppMessage: function () {
 
-  }
+  // }
 })

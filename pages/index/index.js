@@ -45,6 +45,7 @@ Page({
     sideSize: 0,
     // tooltip
     toolTip: {
+      // ready, end, timing, pause, complete
       type: 'ready',
       content: '点击空白格子开始计时'
     },
@@ -314,6 +315,7 @@ Page({
       // init时如果完成数独不记录
       this.isComplete(templist, true)
     } else {
+      clearInterval(this.timeInterval)
       // 查看结果后处理办法
       let tooltip = this.data.toolTip
       tooltip = {
@@ -365,6 +367,7 @@ Page({
         content: '用时' + tooltip.content + ', 已暂停'
       }
     })
+    this.clearStyle()
   },
 
   carryon() {
@@ -385,6 +388,10 @@ Page({
       this.toggleDrawerHandler('toClose')
     } else {
       this.toggleDrawerHandler('toOpen')
+      // console.log(this.data.toolTip)
+      if (this.data.toolTip.type === 'timing') {
+        this.pause()
+      }
     }
   },
 
@@ -450,7 +457,8 @@ Page({
   },
 
   tapBox(e) {
-    if (this.data.complete) {
+    let tooltipType = this.data.toolTip.type
+    if (this.data.complete || tooltipType === 'pause' || tooltipType === 'end' || tooltipType === 'complete') {
       return
     }
     let show = e.currentTarget.dataset.show
@@ -1020,5 +1028,20 @@ Page({
       path: '/pages/index/index',
       imageUrl: img,
     }
-  }
+  },
+
+  route(e) {
+    let pageSize = getCurrentPages().length
+    // console.log(getCurrentPages())
+    let type = e.currentTarget.dataset.type
+    if(pageSize < 5){
+      wx.navigateTo({
+        url: `/pages/${type}/index`,
+      })
+    } else {
+      wx.redirectTo({
+        url: `/pages/${type}/index`,
+      })
+    }
+  },
 })

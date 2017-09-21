@@ -17,7 +17,7 @@ Page({
    */
   onLoad: function (options) {
     this.setData({
-      windowWidth: app.globalData.deviceInfo.windowWidth - 20
+      windowWidth: (app.globalData.deviceInfo.windowWidth - 20) * .7
     })
     let currentYear = new Date().getFullYear()
     if (currentYear !== 2017) {
@@ -25,6 +25,30 @@ Page({
         currentYear: '-' + new Date().getFullYear()
       })
     }
+  },
+
+  copy(e) {
+    let type = e.currentTarget.dataset.type
+    let data
+    if (type === 'email') {
+      data = 'hellowd93@163.com'
+    } else if (type === 'github') {
+      data = 'https://github.com/Pysics/sudoLite'
+    } else {
+      data = 'http://lite.fun'
+    }
+    wx.setClipboardData({
+      data: data,
+      success: function (res) {
+        wx.showToast({
+          title: '已复制',
+          icon: 'success'
+        })
+      }
+    })
+  },
+
+  prevImg() {
   },
 
   /**
@@ -72,7 +96,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  // onShareAppMessage: function () {
 
-  }
+  // }
 })
