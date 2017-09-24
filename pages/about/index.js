@@ -31,11 +31,11 @@ Page({
     let type = e.currentTarget.dataset.type
     let data
     if (type === 'email') {
-      data = 'hellowd93@163.com'
+      data = 'sudo@Lite.Fun'
     } else if (type === 'github') {
       data = 'https://github.com/Pysics/sudoLite'
     } else {
-      data = 'http://lite.fun'
+      data = 'https://lite.fun'
     }
     wx.setClipboardData({
       data: data,

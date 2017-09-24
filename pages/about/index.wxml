@@ -22,8 +22,12 @@
     <text class='title'>Bug、建议与反馈</text>
   </view>
   <view class='bdContent'>
-    <view>Email: <text class='link' bindtap='copy' data-type="email">hellowd93@163.com</text></view>
-    <view>Repo: <text class='link' bindtap='copy' data-type="github">https://github.com/Pysics/sudoLite</text></view>
+    <view>Email:
+      <text class='link' bindtap='copy' data-type="email">sudo@Lite.Fun</text>
+    </view>
+    <view>Repo:
+      <text class='link' bindtap='copy' data-type="github">https://github.com/Pysics/sudoLite</text>
+    </view>
   </view>
   <view class='hdBar'>
     <text class='title'>版权说明</text>
@@ -34,7 +38,7 @@
   <view class='footer'>
     <view>sudoLite v1.1.0</view>
     <!-- <text>© </text> -->
-    <view>2017{{currentYear}} Lite Time,
+    <view>© 2017{{currentYear}} Lite Time,
       <text bindtap='copy' class='link' data-type="website">Lite.Fun</text>
     </view>
   </view>
