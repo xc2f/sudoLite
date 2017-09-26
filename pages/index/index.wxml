@@ -102,7 +102,7 @@
               <view wx:if="{{item}}" style='height: {{(sideSize - 5)/3}}px; line-height: {{(sideSize - 5)/3}}px' id="view{{idx}}" data-idx="{{idx}}" catchtap='tapRowToShowSame'>
                 <view class='index'>{{idx+1}}</view>
                 <view class="{{item>0 ? 'imgs' : 'imgs sgmi'}}">
-                  <image wx:for="{{item > 0 ? item : -item}}" wx:key="item*this" src="/images/{{idx+1}}.png"></image>
+                  <image wx:for="{{item > 0 ? item : -item}}" wx:key="item*this" src="/images/{{idx+1}}.jpg"></image>
                 </view>
                 <view class='counts'>{{item}}</view>
               </view>

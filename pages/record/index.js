@@ -15,7 +15,7 @@ Page({
     canvasSize: 355,
     showTip1: false,
     showTip2: false,
-    loadingTip: '数据读取中...'
+    loadingTip: '数据读取中...',
   },
 
   /**
@@ -28,9 +28,12 @@ Page({
 
     // 显示当前设定等级的canvas
     let currentDegree = app.globalData.shadeDegree
-    this.drawCanvas(currentDegree)
     this.renderRecords(currentDegree)
     this.renderLastRecords()
+
+    // draw canvas
+    this.drawCanvas(currentDegree)
+
   },
 
   drawCanvas(degree) {
@@ -49,6 +52,39 @@ Page({
         })
         this.draw(list, range, title)
       },
+      fail: err => {
+        // 如果当前设置还未有记录，取完成数最多的一局显示
+        wx.getStorage({
+          key: 'records',
+          success: res => {
+            let result = res.data
+            let maxIdx = 0
+            result.map((item, idx) => {
+              if (item.counts && item.counts > 0) {
+                maxIdx = item.counts > result[maxIdx].counts ? idx : maxIdx
+              }
+            })
+            let target = result[maxIdx]
+            range = adapterDegree(target.shadeDegree, 'range')
+            title = adapterDegree(target.shadeDegree)
+            storagePrimaryKey = range[1] / 10 - 1
+            wx.getStorage({
+              key: 'record' + storagePrimaryKey,
+              success: res => {
+                let list2 = []
+                res.data.map(item => {
+                  list2.push({
+                    shadeDegree: parseInt(item.shadeDegree * 100),
+                    useTime: item.timeUse
+                  })
+                })
+                this.draw(list2, range, title)
+              }
+            })
+            this.renderRecords(target.shadeDegree)
+          },
+        })
+      }
     })
   },
 
@@ -232,40 +268,41 @@ Page({
     }
   },
 
-  renderRecords(degree){
+  renderRecords(degree) {
     // console.log('in')
     // records
     let range = adapterDegree(degree, 'range')
-    wx.getStorage({
-      key: 'records',
-      success: res => {
-        let list = []
-        let countsAll = 0
-        // console.log(res.data)
-        res.data.map(item => {
-          let shade = parseInt(item.shadeDegree * 100)
-          let selected = (shade >= range[0] && shade <= range[1]) ? true : false
-          list.push({
-            degree: adapterDegree(item.shadeDegree),
-            counts: item.counts,
-            showTime: item.showTime,
-            recordTime: fromNow(item.recordTime),
-            selected: selected
+
+      wx.getStorage({
+        key: 'records',
+        success: res => {
+          let list = []
+          let countsAll = 0
+          // console.log(res.data)
+          res.data.map(item => {
+            let shade = parseInt(item.shadeDegree * 100)
+            let selected = (shade >= range[0] && shade <= range[1]) ? true : false
+            list.push({
+              degree: adapterDegree(item.shadeDegree),
+              counts: item.counts,
+              showTime: item.showTime,
+              recordTime: fromNow(item.recordTime),
+              selected: selected
+            })
+            countsAll += item.counts
           })
-          countsAll += item.counts
-        })
-        this.setData({
-          records: list,
-          countsAll: countsAll,
-          loadingTip: countsAll === 0 ? '请完成一局数独再来看看吧' : '读取成功，数据渲染中...'
-        })
-      },
-      fail: () => {
-        this.setData({
-          loadingTip: '请完成一局数独再来看看吧'
-        })
-      }
-    })
+          this.setData({
+            records: list,
+            countsAll: countsAll,
+            loadingTip: countsAll === 0 ? '请完成一局数独再来看看吧' : '读取成功，数据渲染中...'
+          })
+        },
+        fail: () => {
+          this.setData({
+            loadingTip: '请完成一局数独再来看看吧'
+          })
+        }
+      })
   },
 
   renderLastRecords() {
