@@ -69,7 +69,7 @@
         <image src="/images/option.png"></image>
       </view>
 
-      <view class="title">9x9数独生成器</view>
+      <view class="title">sudoLite--轻巧数独</view>
 
       <!-- end top -->
     </view>

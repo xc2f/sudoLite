@@ -78,10 +78,11 @@ Page({
     showResult: false,
     resultIsGenerating: true,
 
-    optimization: false
+    optimization: false,
 
     // showCanvasResult: false
     // end data
+    showOption: false,
   },
   degree: .3,
   percentDegree: '30%',
@@ -100,6 +101,7 @@ Page({
 
   canvasResult: null,
 
+  panelOpen: false,
 
   initArray(type) {
     let array = new Array(9)
@@ -119,24 +121,30 @@ Page({
 
   onLoad: function () {
     let deviceInfo = app.globalData.deviceInfo
-    this.degree = app.globalData.shadeDegree
-    this.percentDegree = parseInt(this.degree * 100) + '%'
-    this.degreeTitle = adapterDegree(this.degree)
     // console.log(deviceInfo)
     this.setData({
       deviceInfo: deviceInfo,
       boxSize: (deviceInfo.windowWidth) / 9,
       sideSize: (deviceInfo.windowHeight - deviceInfo.windowWidth) / 2,
-      optimization: app.globalData.optimization
     })
     this.initArray('init')
     this.handleGenerateSudoku()
+  },
+
+  resetConfig(){
+    this.degree = app.globalData.shadeDegree
+    this.percentDegree = parseInt(this.degree * 100) + '%'
+    this.degreeTitle = adapterDegree(this.degree)
+    this.setData({
+      optimization: app.globalData.optimization
+    })
     wx.setNavigationBarTitle({
       title: this.degreeTitle
     })
   },
 
   reset() {
+    this.resetConfig()
     // reset
     clearInterval(this.timeInterval)
     let data = this.data.data
@@ -151,6 +159,7 @@ Page({
         })
       })
     }
+    this.generateSudokuSuccess = false
     this.startTime = 0
     this.pauseTime = 0
     this.timeInterval = null
@@ -195,7 +204,6 @@ Page({
   },
 
   generateSudoku() {
-    this.generateSudokuSuccess = false
     this.reset()
     let result = null
     while (!this.generateSudokuSuccess) {
@@ -290,6 +298,7 @@ Page({
   },
 
   toggleShade(newData, from = 'btn', callback) {
+    console.log(this.degree)
     // console.log('in')
     // 点击事件默认传递一个事件对象，当参数是数组时表示初始化，并且为遮挡状态
     let isArray = newData instanceof Array
@@ -303,23 +312,31 @@ Page({
         item.duplicate = []
         item.fill = ''
         item.rcl = false
+        item.showSame = false
         let leaveIdx = item.value - 1
         // 切换时show的item会再减1
         leave[leaveIdx] = item.show ? leave[leaveIdx] - 1 : leave[leaveIdx]
       })
     ))
 
+    this.setData({
+      data: templist,
+      shade: isArray ? true : !this.data.shade,
+      leave: leave
+    })
 
+    this.togglePanel(false)
 
     if (from === 'init') {
       // init时如果完成数独不记录
       this.isComplete(templist, true)
     } else {
+      this.isComplete(templist)
       clearInterval(this.timeInterval)
       // 查看结果后处理办法
       let tooltip = this.data.toolTip
       tooltip = {
-        type: 'end',
+        type: 'drop',
         content: '请重新生成数独'
       }
       this.setData({
@@ -327,12 +344,7 @@ Page({
       })
       // leave = this.data.shade ? [0,0,0,0,0,0,0,0,0] : leave
     }
-    this.setData({
-      data: templist,
-      shade: isArray ? true : !this.data.shade,
-      leave: leave
-    })
-    this.togglePanel(false)
+
   },
 
   timing() {
@@ -425,17 +437,22 @@ Page({
   togglePanel(toShow) {
     if (this.data.optimization) {
       if (!toShow) {
+        this.panelOpen = false
         this.setData({
           panelPosition: {
             dx: -102,
             dy: -112
           },
         })
+      } else {
+        this.panelOpen = true
       }
     } else {
       let scale = 0
+      this.panelOpen = false
       if (toShow) {
         scale = 1
+        this.panelOpen = true
       }
       this.setData({
         panelShowAnimation: this.basicAnimation(200).scale(scale).step().export()
@@ -443,12 +460,18 @@ Page({
     }
   },
 
-  clearStyle() {
+  clearStyle(type='all') {
     let data = this.data.data
     data.map((rowItem, rowIdx) => {
       rowItem.map((item, idx) => {
-        item.rcl = false
-        item.showSame = false
+        if(type === 'rcl'){
+          item.rcl = false
+        } else if(type === 'same'){
+          item.showSame = false
+        } else {
+          item.rcl = false
+          item.showSame = false
+        }
       })
     })
     this.setData({
@@ -461,16 +484,28 @@ Page({
     if (this.data.complete || tooltipType === 'pause' || tooltipType === 'end' || tooltipType === 'complete') {
       return
     }
+    this.hideOption()
     let show = e.currentTarget.dataset.show
     let value = e.currentTarget.dataset.value
 
+    // 激活的哪个box
+    let data = this.data.data
+    let boxCoords = this.data.boxCoords
+    boxCoords.x = e.currentTarget.dataset.x
+    boxCoords.y = e.currentTarget.dataset.y
+
     if (show) {
-      if (this.data.panelPosition.dx !== -102) {
+      if (this.panelOpen) {
         // 如果点show的格子，panel还开着，先不显示相同数字
         this.togglePanel(false)
       } else {
         this.togglePanel(false)
-        this.showSame(true, value)
+        if (data[boxCoords.y][boxCoords.x].showSame) {
+          this.clearStyle()
+        } else {
+          this.clearStyle('rcl')
+          this.showSame(true, value)
+        }
         this.setData({
           toView: 'view' + (value - 1)
         })
@@ -479,7 +514,10 @@ Page({
     }
 
     this.showSame(false)
-    this.timing()
+
+    if (tooltipType !== 'drop') {
+      this.timing()
+    }
 
     // panel浮层位置
     let panelPosition = this.data.panelPosition
@@ -496,12 +534,6 @@ Page({
       panelPosition.dx = e.detail.x
     }
 
-    // 激活的哪个box
-
-    let data = this.data.data
-    let boxCoords = this.data.boxCoords
-    boxCoords.x = e.currentTarget.dataset.x
-    boxCoords.y = e.currentTarget.dataset.y
     data.map((rowItem, rowIdx) => {
       rowItem.map((item, idx) => {
         item.rcl = false
@@ -575,8 +607,13 @@ Page({
     let unComplete = data.some(itemRow => (itemRow.some(item => (!item.show ? (item.fill ? (item.fill !== item.value) : true) : false))))
     // console.log(unComplete)
     if (unComplete) {
+      this.setData({
+        complete: false,
+      })
       return
     }
+
+    console.log(init)
 
     if (init) {
       // 取消初始化的成绩记录
@@ -595,6 +632,15 @@ Page({
 
     this.clearStyle()
     this.togglePanel(false)
+
+    if (this.data.toolTip.type === 'drop') {
+      this.setData({
+        complete: true,
+        shade: false,
+        showResult: false
+      })
+      return
+    }
 
     this.data.optimization ? '' : this.showCbg()
 
@@ -770,6 +816,7 @@ Page({
       leave: leave
     })
 
+    this.clearStyle('rcl')
     this.togglePanel(false)
 
     // 最多存100条记录
@@ -847,12 +894,19 @@ Page({
   },
 
   showOption() {
-    this.setData({
-      showOptionAnimation: this.basicAnimation().scale(1).step().export()
-    })
+    if (this.data.showOption) {
+      this.hideOption()
+    } else {
+      this.setData({
+        showOption: true,
+        showOptionAnimation: this.basicAnimation().scale(1).step().export()
+      })
+    }
   },
+
   hideOption() {
     this.setData({
+      showOption: false,
       showOptionAnimation: this.basicAnimation(300).scale(0).step().export()
     })
   },
@@ -1034,7 +1088,7 @@ Page({
     let pageSize = getCurrentPages().length
     // console.log(getCurrentPages())
     let type = e.currentTarget.dataset.type
-    if(pageSize < 5){
+    if (pageSize < 5) {
       wx.navigateTo({
         url: `/pages/${type}/index`,
       })

@@ -1,7 +1,7 @@
 <!--pages/about/index.wxml-->
 <view class='container'>
   <view class='hdBar'>
-    <text class='title'>怎样玩？</text>
+    <text class='title'>怎么玩？</text>
   </view>
   <view style="width:{{windowWidth}}px; height:{{windowWidth * 1.7}}px; margin: 5px auto 10px;">
     <image src='/images/demo.jpg' bindtap='prevImg'></image>
@@ -36,7 +36,7 @@
     <view>License: MIT</view>
   </view>
   <view class='footer'>
-    <view>sudoLite v1.1.0</view>
+    <view>sudoLite v1.1.1</view>
     <!-- <text>© </text> -->
     <view>© 2017{{currentYear}} Lite Time,
       <text bindtap='copy' class='link' data-type="website">Lite.Fun</text>
