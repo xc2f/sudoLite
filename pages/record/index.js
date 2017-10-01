@@ -1,7 +1,7 @@
 // pages/record/index.js
 import fromNow, { computeTime } from '../../utils/moment.js'
 // import { degree } from '../../utils/config.js'
-import { adapterDegree } from '../../utils/config.js'
+// import { adapterDegree } from '../../utils/config.js'
 let app = getApp()
 Page({
 
@@ -17,6 +17,9 @@ Page({
     showTip2: false,
     loadingTip: '数据读取中...',
   },
+
+  currentCanvasImg: null,
+  currentList: null,
 
   /**
    * 生命周期函数--监听页面加载
@@ -37,8 +40,8 @@ Page({
   },
 
   drawCanvas(degree) {
-    let range = adapterDegree(degree, 'range')
-    let title = adapterDegree(degree)
+    let range = app.adapterDegree(degree, 'range')
+    let title = app.adapterDegree(degree)
     let storagePrimaryKey = range[1] / 10 - 1
     wx.getStorage({
       key: 'record' + storagePrimaryKey,
@@ -65,8 +68,8 @@ Page({
               }
             })
             let target = result[maxIdx]
-            range = adapterDegree(target.shadeDegree, 'range')
-            title = adapterDegree(target.shadeDegree)
+            range = app.adapterDegree(target.shadeDegree, 'range')
+            title = app.adapterDegree(target.shadeDegree)
             storagePrimaryKey = range[1] / 10 - 1
             wx.getStorage({
               key: 'record' + storagePrimaryKey,
@@ -257,6 +260,28 @@ Page({
     })
 
     ctx.draw()
+    this.currentCanvasToImg(cw, ch)
+    this.currentList = data
+  },
+
+  currentCanvasToImg(cw, ch){
+    wx.canvasToTempFilePath({
+      // x: 0,
+      // y: 0,
+      // width: cw,
+      // height: ch,
+      // destWidth: cw,
+      // destHeight: cw * 168 / 215,
+      canvasId: 'myCanvas',
+      success: res => {
+        this.currentCanvasImg = res.tempFilePath
+      },
+      fail: () => {
+        setTimeout(() => {
+          this.currentCanvasToImg()
+        }, 50)
+      }
+    })
   },
 
   parseShadeDegree(shadeDegree) {
@@ -271,38 +296,38 @@ Page({
   renderRecords(degree) {
     // console.log('in')
     // records
-    let range = adapterDegree(degree, 'range')
+    let range = app.adapterDegree(degree, 'range')
 
-      wx.getStorage({
-        key: 'records',
-        success: res => {
-          let list = []
-          let countsAll = 0
-          // console.log(res.data)
-          res.data.map(item => {
-            let shade = parseInt(item.shadeDegree * 100)
-            let selected = (shade >= range[0] && shade <= range[1]) ? true : false
-            list.push({
-              degree: adapterDegree(item.shadeDegree),
-              counts: item.counts,
-              showTime: item.showTime,
-              recordTime: fromNow(item.recordTime),
-              selected: selected
-            })
-            countsAll += item.counts
+    wx.getStorage({
+      key: 'records',
+      success: res => {
+        let list = []
+        let countsAll = 0
+        // console.log(res.data)
+        res.data.map(item => {
+          let shade = parseInt(item.shadeDegree * 100)
+          let selected = (shade >= range[0] && shade <= range[1]) ? true : false
+          list.push({
+            degree: app.adapterDegree(item.shadeDegree),
+            counts: item.counts,
+            showTime: item.showTime,
+            recordTime: fromNow(item.recordTime),
+            selected: selected
           })
-          this.setData({
-            records: list,
-            countsAll: countsAll,
-            loadingTip: countsAll === 0 ? '请完成一局数独再来看看吧' : '读取成功，数据渲染中...'
-          })
-        },
-        fail: () => {
-          this.setData({
-            loadingTip: '请完成一局数独再来看看吧'
-          })
-        }
-      })
+          countsAll += item.counts
+        })
+        this.setData({
+          records: list,
+          countsAll: countsAll,
+          loadingTip: countsAll === 0 ? '请完成一局数独再来看看吧' : '读取成功，数据渲染中...'
+        })
+      },
+      fail: () => {
+        this.setData({
+          loadingTip: '请完成一局数独再来看看吧'
+        })
+      }
+    })
   },
 
   renderLastRecords() {
@@ -317,7 +342,7 @@ Page({
             recordTime: fromNow(item.recordTime),
             showTime: item.showTime,
             shadeDegree: parseInt(item.shadeDegree * 100) + '%',
-            degree: adapterDegree(item.shadeDegree)
+            degree: app.adapterDegree(item.shadeDegree)
           })
         })
         this.setData({
@@ -361,6 +386,8 @@ Page({
   },
 
   drawItem(e) {
+    this.currentCanvasImg = null
+    this.currentList = null
     let idx = e.currentTarget.dataset.idx
     // degree值为0，1，2，3，4，5，6，7，8，9
     // 为0的时候避免判断为false, 1的时候为第二级，避免为1成为第一级
@@ -414,7 +441,20 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  // onShareAppMessage: function () {
-
-  // }
+  onShareAppMessage: function () {
+    let title
+    console.log(this.currentCanvasImg)
+    if(this.currentList){
+      let length = this.currentList.length
+      let degree = app.adapterDegree(this.currentList[0].shadeDegree / 100)
+      title = `共${this.data.countsAll}局，${length}局于${degree}`
+    } else {
+      title = `我在sudoLite共完成${this.data.countsAll}局数独`
+    }
+    return {
+      title: title,
+      path: '/pages/index/index',
+      imageUrl: this.currentCanvasImg,
+    }
+  }
 })

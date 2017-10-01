@@ -97,6 +97,11 @@ button:after {
 
 .hdBar .right {
   float: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
 }
 
 .bdContent {

@@ -1,5 +1,5 @@
 // pages/setting/index.js
-import { degree } from '../../utils/config.js'
+// import { degree } from '../../utils/config.js'
 import deepCopy from '../../utils/deepCopy.js'
 let app = getApp()
 Page({
@@ -12,6 +12,7 @@ Page({
     degree: [],
     showTip1: false,
     showTip2: false,
+    showTip3: false,
     optimizationChecked: false
   },
 
@@ -28,7 +29,7 @@ Page({
   },
 
   parseDegree(shade) {
-    let degreeData = deepCopy(degree)
+    let degreeData = deepCopy(app.globalData.degree)
     degreeData.map(item => {
       if(shade >= item.range[0] && shade <= item.range[1]){
         item.selected = true
@@ -63,6 +64,11 @@ Page({
       showTip2: true
     })
   },
+  showTip3: function(){
+    this.setData({
+      showTip3: true
+    })
+  },
 
   changeOptimization(e) {
     let result = e.detail.value
@@ -70,6 +76,18 @@ Page({
     wx.setStorage({
       key: 'optimization',
       data: result,
+    })
+  },
+
+  clearStorage(){
+    wx.showModal({
+      title: '警告',
+      content: '将清除您本地所有成绩数据、设置记录。如未备份，将不可恢复，是否继续？',
+      success: res => {
+        if(res.confirm){
+          wx.clearStorage()
+        }
+      }
     })
   },
 

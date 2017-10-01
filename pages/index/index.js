@@ -4,7 +4,7 @@
 // import { degree } from '../../utils/config.js'
 //获取应用实例
 var app = getApp()
-import { adapterDegree } from '../../utils/config.js'
+// import { adapterDegree } from '../../utils/config.js'
 import { parseTime } from '../../utils/moment.js'
 Page({
   data: {
@@ -134,7 +134,7 @@ Page({
   resetConfig(){
     this.degree = app.globalData.shadeDegree
     this.percentDegree = parseInt(this.degree * 100) + '%'
-    this.degreeTitle = adapterDegree(this.degree)
+    this.degreeTitle = app.adapterDegree(this.degree)
     this.setData({
       optimization: app.globalData.optimization
     })
@@ -671,7 +671,7 @@ Page({
     }
 
     // 即生成0到9的key
-    let storagePrimaryKey = adapterDegree(this.degree, 'range')[1] / 10 - 1
+    let storagePrimaryKey = app.adapterDegree(this.degree, 'range')[1] / 10 - 1
 
     wx.getStorage({
       key: 'record' + storagePrimaryKey,
@@ -1070,12 +1070,14 @@ Page({
    */
   onShareAppMessage: function (e) {
     let title, img = ''
+    let range = app.adapterDegree(this.degree, 'range')[1] / 10 - 1
+    let share = app.globalData.share
     if (e.from === 'button') {
       img = this.canvasResult ? this.canvasResult : ''
-      title = '我在sudoLite完成了一项挑战，战绩如下：'
+      title = share.range[range] || '我在sudoLite完成了一项挑战，战绩如下：'
       // console.log(img)
     } else {
-      title = 'Lite.Fun'
+      title = share.index || 'Lite.Fun'
     }
     return {
       title: title,

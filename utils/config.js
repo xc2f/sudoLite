@@ -33,20 +33,3 @@ export const degree = [
     title: '吹牛水平了得'
   },
 ]
-
-export function adapterDegree(shadeDegree, returnType='title') {
-  let setDegree = parseInt(shadeDegree * 100)
-  let title, range
-  degree.map(item => {
-    if (setDegree >= item.range[0] && setDegree <= item.range[1]) {
-      title = item.title
-      range = item.range
-      // 好像并不会跳过剩余的循环
-      return
-    }
-  })
-  if(returnType === 'range'){
-    return range
-  }
-  return title
-}
