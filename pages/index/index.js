@@ -131,7 +131,7 @@ Page({
     this.handleGenerateSudoku()
   },
 
-  resetConfig(){
+  resetConfig() {
     this.degree = app.globalData.shadeDegree
     this.percentDegree = parseInt(this.degree * 100) + '%'
     this.degreeTitle = app.adapterDegree(this.degree)
@@ -145,6 +145,7 @@ Page({
 
   reset() {
     this.resetConfig()
+    this.hideOption()
     // reset
     clearInterval(this.timeInterval)
     let data = this.data.data
@@ -186,7 +187,7 @@ Page({
       return
     }
     // !== timing
-    if (!this.data.init || this.data.complete || this.data.toolTip.type === 'ready' || this.data.toolTip.type === 'end') {
+    if (!this.data.init || this.data.complete || this.data.toolTip.type === 'ready' || this.data.toolTip.type === 'end' || this.data.toolTip.type === 'drop') {
       this.generateSudoku()
     } else {
       wx.showModal({
@@ -298,7 +299,7 @@ Page({
   },
 
   toggleShade(newData, from = 'btn', callback) {
-    console.log(this.degree)
+    // console.log(this.degree)
     // console.log('in')
     // 点击事件默认传递一个事件对象，当参数是数组时表示初始化，并且为遮挡状态
     let isArray = newData instanceof Array
@@ -331,7 +332,6 @@ Page({
       // init时如果完成数独不记录
       this.isComplete(templist, true)
     } else {
-      this.isComplete(templist)
       clearInterval(this.timeInterval)
       // 查看结果后处理办法
       let tooltip = this.data.toolTip
@@ -342,6 +342,7 @@ Page({
       this.setData({
         toolTip: tooltip
       })
+      this.isComplete(templist)
       // leave = this.data.shade ? [0,0,0,0,0,0,0,0,0] : leave
     }
 
@@ -460,13 +461,13 @@ Page({
     }
   },
 
-  clearStyle(type='all') {
+  clearStyle(type = 'all') {
     let data = this.data.data
     data.map((rowItem, rowIdx) => {
       rowItem.map((item, idx) => {
-        if(type === 'rcl'){
+        if (type === 'rcl') {
           item.rcl = false
-        } else if(type === 'same'){
+        } else if (type === 'same') {
           item.showSame = false
         } else {
           item.rcl = false
@@ -613,7 +614,7 @@ Page({
       return
     }
 
-    console.log(init)
+    // console.log(init)
 
     if (init) {
       // 取消初始化的成绩记录
@@ -632,7 +633,8 @@ Page({
 
     this.clearStyle()
     this.togglePanel(false)
-
+    
+    // console.log(this.data.toolTip)
     if (this.data.toolTip.type === 'drop') {
       this.setData({
         complete: true,
@@ -1074,10 +1076,10 @@ Page({
     let share = app.globalData.share
     if (e.from === 'button') {
       img = this.canvasResult ? this.canvasResult : ''
-      title = share.range[range] || '我在sudoLite完成了一项挑战，战绩如下：'
+      title = (share && share.range[range]) || '我在sudoLite完成了一项挑战，战绩如下：'
       // console.log(img)
     } else {
-      title = share.index || 'Lite.Fun'
+      title = (share && share.index) || '生命因创造而有趣'
     }
     return {
       title: title,

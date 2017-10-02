@@ -443,7 +443,6 @@ Page({
    */
   onShareAppMessage: function () {
     let title
-    console.log(this.currentCanvasImg)
     if(this.currentList){
       let length = this.currentList.length
       let degree = app.adapterDegree(this.currentList[0].shadeDegree / 100)
@@ -454,7 +453,7 @@ Page({
     return {
       title: title,
       path: '/pages/index/index',
-      imageUrl: this.currentCanvasImg,
+      // imageUrl: this.currentCanvasImg,
     }
   }
 })

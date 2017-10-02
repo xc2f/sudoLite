@@ -1,5 +1,11 @@
 <!--pages/about/index.wxml-->
 <view class='container'>
+  <view class='hdBar tip' wx:if="{{tip && tip.title}}">
+    <text class='title'>{{tip.title}}</text>
+  </view>
+  <view class='bdContent tip' wx:if="{{tip && tip.content}}">
+    {{tip.content}}
+  </view>
   <view class='hdBar'>
     <text class='title'>怎么玩？</text>
   </view>

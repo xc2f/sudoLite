@@ -28,3 +28,20 @@ text.link {
   color: #337ab7;
   /* font-style: italic;  */
 }
+
+.tip.hdBar {
+  border-bottom: none;
+}
+
+.tip.hdBar text {
+  width: 100%;
+  text-align: center;
+  font-weight: normal;
+}
+
+.tip.bdContent {
+  background: #eee;
+  margin: 0 -10px;
+  padding: 10px;
+  /* font-size: 17px; *//* border-radius: 2px; */
+}

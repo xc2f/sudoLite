@@ -11,7 +11,7 @@ App({
     optimization: false,
 
     requestHost: 'https://www.easy-mock.com/mock/59d100919cabc90bb5e5743c/sudoLite',
-    share: [],
+    share: null,
     degree: degree,
   },
 

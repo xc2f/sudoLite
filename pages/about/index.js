@@ -9,7 +9,8 @@ Page({
    */
   data: {
     windowWidth: 355 - 20,
-    currentYear: ''
+    currentYear: '',
+    tip: null
   },
 
   /**
@@ -62,7 +63,20 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    wx.request({
+      url: app.globalData.requestHost + '/tip',
+      method: 'GET',
+      success: res => {
+        if(res.data.code === 201){
+          this.setData({
+            tip: {
+              title: res.data.result.title,
+              content: res.data.result.content
+            }
+          })
+        }
+      }
+    })
   },
 
   /**
