@@ -30,6 +30,7 @@ page, .container {
 }
 
 .sudoku {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -74,7 +75,7 @@ page, .container {
   color: #d9534f;
 }
 
-.box.show .showSame {
+.box .showSame {
   /* color: #f0ad4e; */
   background: rgba(255, 193, 7, 0.3);
 }
@@ -132,11 +133,11 @@ page, .container {
   height: 170px;
   top: calc(50% - 85px);
   left: calc(50% - 110px);
-  z-index: 2;
+  z-index: 3;
   background: #fff;
   border-radius: 2px;
   box-shadow: 1px 3px 7px rgba(0, 0, 0, 0.3);
-   transform: scale(0); 
+  transform: scale(0);
 }
 
 .optionBox .hd {
@@ -181,14 +182,13 @@ page, .container {
   margin: 10px;
 }
 
-
 .panel {
   width: 102px;
   height: 102px;
   /* border: 1px solid red; */
   text-align: center;
   position: absolute;
-   box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.3);
   /* transform: scale(0);  */
   z-index: 2;
 }
@@ -205,6 +205,10 @@ page, .container {
   /* margin, padding, border都算在width内 */
   margin: 2px;
   font-weight: bold;
+}
+
+.panel .hover {
+  background: #eee;
 }
 
 .toolTip {
@@ -231,6 +235,26 @@ page, .container {
   background: #fff;
   display: block;
   margin: 2px;
+}
+
+.pauseShow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  font-size: 2em;
+  color: #fff;
+  letter-spacing: 20px;
+  padding-left: 10px;
+  text-shadow: 1px 3px 5px rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .carry-on {
@@ -332,6 +356,7 @@ page, .container {
   align-self: flex-start;
   border-bottom: none;
 }
+
 .container .drawer .row.hover {
   /* background: rgba(255, 193, 7, .3) */
   background: #eee;
@@ -405,7 +430,7 @@ page, .container {
   height: 20px;
   margin-top: 3px;
   padding: 2px;
-  transform: rotate(7deg);
+  /* transform: rotate(7deg); */
 }
 
 .completeInfo {
@@ -433,7 +458,7 @@ page, .container {
   text-align: center;
   padding: 0;
   border-radius: 2px;
-  box-shadow: 1px 2px 2px rgba(0, 0, 0, .3);
+  box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.3);
   color: #fff;
 }
 

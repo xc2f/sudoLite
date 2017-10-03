@@ -36,7 +36,7 @@
     <!-- 浮层 -->
     <view class='panel' style="top: {{panelPosition.dy}}px; left: {{panelPosition.dx}}px;" animation="{{panelShowAnimation}}">
       <block wx:for="{{panelData}}" wx:key="item*this">
-        <view catchtap='panelTap' data-value="{{item}}">{{item}}</view>
+        <view catchtap='panelTap' data-value="{{item}}" hover-class='hover' hover-start-time='0'>{{item}}</view>
       </block>
     </view>
 
@@ -75,6 +75,7 @@
     </view>
 
     <view class="sudoku">
+      <view class='pauseShow' wx:if="{{toolTip.type==='pause'}}">PAUSE</view>
       <view wx:for="{{data}}" wx:key="" class="row">
         <block wx:key="" wx:for="{{item}}">
           <!-- rcl: row cross line 行与列光标香蕉 -->

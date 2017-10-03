@@ -152,14 +152,18 @@ Page({
     if (data[0][0] === undefined) {
       return
     }
-    if (!this.data.optimization) {
-      data.map((itemRow, idxRow) => {
-        itemRow.map((item, idx) => {
-          // 从右下角退回
+    // if (!this.data.optimization) {
+    data.map((itemRow, idxRow) => {
+      itemRow.map((item, idx) => {
+        // 从右下角退回
+        if (this.data.optimization) {
+          item.successAnimation = this.basicAnimation(50, 0).scale(0).step().export()
+        } else {
           item.successAnimation = this.basicAnimation(50, (8 - idx + 8 - idxRow) * 50 - 50).scale(0).step().export()
-        })
+        }
       })
-    }
+    })
+    // }
     this.generateSudokuSuccess = false
     this.startTime = 0
     this.pauseTime = 0
@@ -447,6 +451,9 @@ Page({
         })
       } else {
         this.panelOpen = true
+        this.setData({
+          panelShowAnimation: this.basicAnimation(200).scale(1).step().export()
+        })
       }
     } else {
       let scale = 0
@@ -633,7 +640,7 @@ Page({
 
     this.clearStyle()
     this.togglePanel(false)
-    
+
     // console.log(this.data.toolTip)
     if (this.data.toolTip.type === 'drop') {
       this.setData({
@@ -914,6 +921,9 @@ Page({
   },
 
   tapRowToShowSame(e) {
+    if(this.data.toolTip.type === 'pause'){
+      return
+    }
     this.showSame(true, e.currentTarget.dataset.idx + 1)
   },
 
@@ -1076,7 +1086,7 @@ Page({
     let share = app.globalData.share
     if (e.from === 'button') {
       img = this.canvasResult ? this.canvasResult : ''
-      title = (share && share.range[range]) || '我在sudoLite完成了一项挑战，战绩如下：'
+      title = (share && share.range[range]) || '我在sudoLite完成了一项数独挑战，成绩如下：'
       // console.log(img)
     } else {
       title = (share && share.index) || '生命因创造而有趣'
