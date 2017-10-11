@@ -11,7 +11,7 @@
 - Sometimes generate slowly
 
 ## Online Example
-[https://pysics.github.io/sudoku/build/](https://pysics.github.io/sudoku/build/)
+[https://github.com/Pysics/sudoLite/tree/react/build/](https://github.com/Pysics/sudoLite/tree/react/build/)
 
 ## Installation
 ```
