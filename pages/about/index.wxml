@@ -42,7 +42,7 @@
     <view>License: MIT</view>
   </view>
   <view class='footer'>
-    <view>sudoLite v1.1.1</view>
+    <view>sudoLite v1.1.2</view>
     <!-- <text>© </text> -->
     <view>© 2017{{currentYear}} Lite Time,
       <text bindtap='copy' class='link' data-type="website">Lite.Fun</text>

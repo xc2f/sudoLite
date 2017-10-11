@@ -357,21 +357,26 @@ Page({
       return
     }
     this.startTime = this.startTime || new Date().getTime()
-    let m, s
+    this.computeTime()
     this.timeInterval = setInterval(() => {
-      this.pauseTime ? this.pauseTime += 1000 : ''
-      let time = Math.round(((this.pauseTime || new Date().getTime()) - this.startTime) / 1000)
-      m = Math.floor(time / 60)
-      s = time % 60 < 10 ? '0' + time % 60 : time % 60
-      let tooltip = {
-        type: 'timing',
-        content: m + ':' + s,
-      }
-      this.setData({
-        toolTip: tooltip
-      })
+      this.computeTime()
     }, 1000)
   },
+
+  computeTime(){
+    this.pauseTime ? this.pauseTime += 1000 : ''
+    let time = Math.round(((this.pauseTime || new Date().getTime()) - this.startTime) / 1000)
+    let m = Math.floor(time / 60)
+    let s = time % 60 < 10 ? '0' + time % 60 : time % 60
+    let tooltip = {
+      type: 'timing',
+      content: m + ':' + s,
+    }
+    this.setData({
+      toolTip: tooltip
+    })
+  },
+  
 
   pause() {
     clearInterval(this.timeInterval)
@@ -526,8 +531,8 @@ Page({
     }
 
     this.showSame(false)
-
-    if (tooltipType !== 'drop') {
+    // 判断为null的作用是避免瞬时多次点击
+    if (tooltipType !== 'drop' && this.timeInterval === null) {
       this.timing()
     }
 
@@ -1106,14 +1111,22 @@ Page({
     let pageSize = getCurrentPages().length
     // console.log(getCurrentPages())
     let type = e.currentTarget.dataset.type
-    if (pageSize < 5) {
-      wx.navigateTo({
-        url: `/pages/${type}/index`,
-      })
+    if(type === 'index'){
+      this.closeDrawer()
     } else {
-      wx.redirectTo({
-        url: `/pages/${type}/index`,
-      })
+      if (pageSize < 5) {
+        wx.navigateTo({
+          url: `/pages/${type}/index`,
+        })
+      } else {
+        wx.redirectTo({
+          url: `/pages/${type}/index`,
+        })
+      }
     }
   },
+
+  // onShow: function(){
+  //   console.log(getCurrentPages())
+  // }
 })

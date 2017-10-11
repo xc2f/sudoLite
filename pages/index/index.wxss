@@ -219,6 +219,10 @@ page, .container {
   color: #fff;
 }
 
+.toolTip.timing {
+  font-size: 24px;
+}
+
 .pause {
   position: absolute;
   left: calc(50% - 2px - 4px - 2px);
@@ -248,13 +252,15 @@ page, .container {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2;
-  font-size: 2em;
-  color: #fff;
-  letter-spacing: 20px;
-  padding-left: 10px;
-  text-shadow: 1px 3px 5px rgba(0, 0, 0, 0.3);
-  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  /* font-size: 2em; */
+  /* font-size:  */
+  color: #777;
+  /* letter-spacing: 20px; */
+  /* padding-left: 10px; */
+  /* text-shadow: 1px 3px 5px rgba(0, 0, 0, 0.3); */
+  /* background: rgba(0, 0, 0, 0.3); */
+  background: #eee;
 }
 
 .carry-on {
@@ -275,7 +281,7 @@ page, .container {
 .option {
   position: absolute;
   right: 10px;
-  bottom: 5px;
+  bottom: 7px;
 }
 
 .option image {
@@ -300,10 +306,10 @@ page, .container {
   border-radius: 3px;
 }
 
-.menu text:first-child,
-.menu text:last-child {
+.menu text:first-child, .menu text:last-child {
   width: 20px;
 }
+
 .menu text:nth-child(2) {
   width: 15px;
 }
@@ -358,16 +364,22 @@ page, .container {
 }
 
 .container .drawer .row {
-  height: 45px;
-  line-height: 45px;
+  height: 50px;
+  line-height: 50px;
   font-size: 14px;
-  align-self: flex-start;
   border-bottom: none;
 }
 
 .container .drawer .row.hover {
   /* background: rgba(255, 193, 7, .3) */
   background: #eee;
+}
+
+.container .drawer .row image {
+  width: 24px;
+  height: 24px;
+  /* float: left; */
+  padding: 13px 7px;
 }
 
 .bottom .info {

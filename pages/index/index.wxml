@@ -9,25 +9,35 @@
     <view class='top'>
       <movable-area>
         <movable-view direction="all" x="{{avatarPosition.x}}" y="{{avatarPosition.y}}" out-of-bounds='true' damping='50' inertia='true' bindtouchend="moveAvatarEnd">
-          <image src='/images/avatar.jpg' catchtap='tapAvatar' catchlongpress="longTapAvatar"></image>
+          <image src='/images/logo.png' catchtap='tapAvatar' catchlongpress="longTapAvatar"></image>
         </movable-view>
       </movable-area>
       <text catchlongtap='longTapAvatarTitle'>{{avatarTitle.text}}</text>
     </view>
     <!-- <navigator url="/pages/index/index"> -->
-      <view class='row' bindtap='route' data-type='index' hover-class='hover' hover-start-time='0' hover-stay-time='170'>数独</view>
+      <view class='row' bindtap='route' data-type='index' hover-class='hover' hover-start-time='0' hover-stay-time='170'>
+      <image src='/images/ic_fiber_new_black_24dp_2x.png'></image>
+      数独</view>
     <!-- </navigator> -->
     <!-- <navigator url="/pages/record/index"> -->
-      <view class='row' bindtap='route' data-type='record' hover-class='hover' hover-start-time='0' hover-stay-time='170'>统计</view>
+      <view class='row' bindtap='route' data-type='record' hover-class='hover' hover-start-time='0' hover-stay-time='170'>
+      <image src='/images/ic_trending_up_black_24dp_2x.png'></image>
+      统计</view>
     <!-- </navigator> -->
     <!-- <navigator url="/pages/rank/index"> -->
-      <view class='row' bindtap='route' data-type='rank' hover-class='hover' hover-start-time='0' hover-stay-time='170'>排行</view>
+      <view class='row' bindtap='route' data-type='rank' hover-class='hover' hover-start-time='0' hover-stay-time='170'>
+      <image src='/images/ic_equalizer_black_24dp_2x.png'></image>
+      排行</view>
     <!-- </navigator> -->
     <!-- <navigator url="/pages/setting/index"> -->
-      <view class='row' bindtap='route' data-type='setting' hover-class='hover' hover-start-time='0' hover-stay-time='170'> 设置</view>
+      <view class='row' bindtap='route' data-type='setting' hover-class='hover' hover-start-time='0' hover-stay-time='170'>
+      <image src='/images/ic_settings_black_24dp_2x.png'></image>
+      设置</view>
     <!-- </navigator> -->
     <!-- <navigator url='/pages/about/index'> -->
-      <view class='row' bindtap='route' data-type='about' hover-class='hover' hover-start-time='0' hover-stay-time='170'>关于</view>
+      <view class='row' bindtap='route' data-type='about' hover-class='hover' hover-start-time='0' hover-stay-time='170'>
+      <image src='/images/ic_face_black_24dp_2x.png'></image>
+      关于</view>
     <!-- </navigator> -->
   </view>
 
@@ -58,7 +68,7 @@
         <text animation="{{menuAnimationMiddle}}"></text>
         <text animation="{{menuAnimationBottom}}"></text>
       </view>
-      <view class='toolTip'>{{toolTip.content}}</view>
+      <view class='{{toolTip.type==="timing" ? "toolTip timing" : "toolTip"}}'>{{toolTip.content}}</view>
        <view class='pause' bindtap='pause' wx:if="{{toolTip.type==='timing'}}">
         <text></text>
         <text></text>
@@ -66,7 +76,8 @@
        <view class='carry-on' bindtap='carryon' wx:if="{{toolTip.type==='pause'}}">
       </view> 
       <view class='option' bindtap='showOption'>
-        <image src="/images/option.png"></image>
+        <!-- <image src="/images/option.png"></image> -->
+        <image src='/images/ic_lightbulb_outline_white_24dp_2x.png'></image>
       </view>
 
       <view class="title">sudoLite--轻巧数独</view>
@@ -75,7 +86,7 @@
     </view>
 
     <view class="sudoku">
-      <view class='pauseShow' wx:if="{{toolTip.type==='pause'}}">PAUSE</view>
+      <view class='pauseShow' wx:if="{{toolTip.type==='pause'}}">PAUSE..</view>
       <view wx:for="{{data}}" wx:key="" class="row">
         <block wx:key="" wx:for="{{item}}">
           <!-- rcl: row cross line 行与列光标香蕉 -->
