@@ -292,12 +292,20 @@ page, .container {
 }
 
 .menu text {
-  width: 20px;
-  height: 3px;
+  /* width: 20px; */
+  height: 2px;
   background: #fff;
   display: block;
-  margin: 3px;
+  margin: 4px;
   border-radius: 3px;
+}
+
+.menu text:first-child,
+.menu text:last-child {
+  width: 20px;
+}
+.menu text:nth-child(2) {
+  width: 15px;
 }
 
 .container .drawer {

@@ -421,20 +421,24 @@ Page({
       menuDx = '70%',
       menuRotate = 30,
       menuWidth = 30,
-      drawDx = '30%'
+      drawDx = '30%',
+      // h = 3,
+      w = 22
     if (type === 'toClose') {
       toggle = false,
         menuDx = 0,
         menuRotate = 0,
-        menuWidth = 20,
-        drawDx = '100%'
+        menuWidth = 15,
+        drawDx = '100%',
+        // h = 2,
+        w = 20
     }
     this.setData({
       drawerToggle: toggle,
       menuAnimation: this.basicAnimation().translate(menuDx).step().export(),
-      menuAnimationTop: this.basicAnimation().rotate(-menuRotate).step().export(),
+      menuAnimationTop: this.basicAnimation().rotate(-menuRotate).width(w).step().export(),
       menuAnimationMiddle: this.basicAnimation().width(menuWidth).step().export(),
-      menuAnimationBottom: this.basicAnimation().rotate(menuRotate).step().export(),
+      menuAnimationBottom: this.basicAnimation().rotate(menuRotate).width(w).step().export(),
       drawer: this.basicAnimation().right(drawDx).step().export()
     })
   },
