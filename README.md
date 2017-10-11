@@ -1,5 +1,5 @@
 <h1 align="center">
-	<img width="170" src="./images/logo.png" />
+	<img width="170" src="./images/logo2.png" />
   <p>sudoLite</p>
 	<br>
 	<br>
