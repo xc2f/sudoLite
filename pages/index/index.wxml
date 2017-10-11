@@ -16,7 +16,7 @@
     </view>
     <!-- <navigator url="/pages/index/index"> -->
       <view class='row' bindtap='route' data-type='index' hover-class='hover' hover-start-time='0' hover-stay-time='170'>
-      <image src='/images/ic_fiber_new_black_24dp_2x.png'></image>
+      <image src='/images/ic_apps_black_24dp_2x.png'></image>
       数独</view>
     <!-- </navigator> -->
     <!-- <navigator url="/pages/record/index"> -->
