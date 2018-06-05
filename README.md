@@ -1,6 +1,9 @@
 <h1 align="center">
+	<div>
 	<img width="170" src="./images/logo2.png" />
-  	<p>sudoLite</p>
+	<img width="170" src="./images/qrcode.jpg" />
+	</div>
+	<h2 align="center">sudoLite</h2>
 	<br>
 	<br>
 </h1>
@@ -26,19 +29,4 @@
   - 性能较差，部分安卓机会卡
   
   - 未知bug
-	
-	
 
-## 截图
-
-### 主页
-<img width="270" src="https://lite.fun/images/index.jpg" />
-
-### 统计
-<img width="270" src="https://lite.fun/images/record.jpg" />
-
-### 排行
-<img width="270" src="https://lite.fun/images/rank.jpg" />
-
-## ENJOY
-<img width="270" src="https://lite.fun/images/qrcode.jpg" />
