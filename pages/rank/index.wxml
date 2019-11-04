@@ -1,4 +1,0 @@
-<!--pages/rank/index.wxml-->
-<view class='container empty'>
-  <text>排行功能即将上线，敬请期待！</text>
-</view>
