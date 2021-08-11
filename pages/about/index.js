@@ -1,16 +1,15 @@
 // pages/about/index.js
 
-let app = getApp()
+let app = getApp();
 
 Page({
-
   /**
    * 页面的初始数据
    */
   data: {
     windowWidth: 355 - 20,
     currentYear: '',
-    tip: null
+    tip: null,
   },
 
   /**
@@ -18,94 +17,83 @@ Page({
    */
   onLoad: function (options) {
     this.setData({
-      windowWidth: (app.globalData.deviceInfo.windowWidth - 20) * .7
-    })
-    let currentYear = new Date().getFullYear()
+      windowWidth: (app.globalData.deviceInfo.windowWidth - 20) * 0.7,
+    });
+    let currentYear = new Date().getFullYear();
     if (currentYear !== 2017) {
       this.setData({
-        currentYear: '-' + new Date().getFullYear()
-      })
+        currentYear: '-' + new Date().getFullYear(),
+      });
     }
   },
 
   copy(e) {
-    let type = e.currentTarget.dataset.type
-    let data
+    let type = e.currentTarget.dataset.type;
+    let data;
     if (type === 'email') {
-      data = 'sudo@Lite.Fun'
+      data = 'hellowd93@163.com';
     } else if (type === 'github') {
-      data = 'https://github.com/Pysics/sudoLite'
+      data = 'https://github.com/17forever/sudoLite/';
     } else {
-      data = 'https://lite.fun'
+      data = 'https://lite.fun/';
     }
     wx.setClipboardData({
       data: data,
       success: function (res) {
         wx.showToast({
           title: '已复制',
-          icon: 'success'
-        })
-      }
-    })
+          icon: 'success',
+        });
+      },
+    });
   },
 
-  prevImg() {
-  },
+  prevImg() {},
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
-
-  },
+  onReady: function () {},
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    wx.request({
-      url: app.globalData.requestHost + '/tip',
-      method: 'GET',
-      success: res => {
-        if(res.data.code === 201){
-          this.setData({
-            tip: {
-              title: res.data.result.title,
-              content: res.data.result.content
-            }
-          })
-        }
-      }
-    })
+    // wx.request({
+    //   url: app.globalData.requestHost + '/tip',
+    //   method: 'GET',
+    //   success: (res) => {
+    //     if (res.data.code === 201) {
+    //       this.setData({
+    //         tip: {
+    //           title: res.data.result.title,
+    //           content: res.data.result.content,
+    //         },
+    //       });
+    //     }
+    //   },
+    // });
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
-
-  },
+  onHide: function () {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
-
-  },
+  onUnload: function () {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
-
-  },
+  onPullDownRefresh: function () {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
-
-  },
+  onReachBottom: function () {},
 
   /**
    * 用户点击右上角分享
@@ -113,4 +101,4 @@ Page({
   // onShareAppMessage: function () {
 
   // }
-})
+});

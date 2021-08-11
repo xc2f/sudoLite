@@ -4,7 +4,7 @@
   <view class='hdBar'>
     <text class='title'>性能优化</text>
     <image src='/images/tip.png' bindtap='showTip1'></image>
-    <text class='tip' wx:if="{{showTip1}}">关闭动画，建议部分安卓机开启</text>
+    <text class='tip' wx:if="{{showTip1}}">关闭动画</text>
     <view class='right'>
       <switch checked='{{optimizationChecked}}' bindchange="changeOptimization" color='#ffc107' />
     </view>
@@ -32,7 +32,7 @@
   <view class='hdBar'>
     <text class='title'>清除数据</text>
     <image src='/images/tip.png' bindtap='showTip3'></image>
-    <text class='tip' wx:if="{{showTip3}}">清除您本地所有数据</text>
+    <text class='tip' wx:if="{{showTip3}}">清除本地所有数据</text>
     <view class='right'>
       <button size="mini" type="warn" bindtap='clearStorage'>清除</button>
     </view>

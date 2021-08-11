@@ -16,23 +16,23 @@
     <text class='title'>数据存储说明</text>
   </view>
   <view class='bdContent'>
-    目前，在完成数独的情况下，您的成绩会缓存在本地，删除sudoLite、卸载微信均会使您成绩数据丢失。在下一版本，将提供上传同步“生涯统计”的功能。
+    目前，在完成数独的情况下，您的成绩会缓存在本地，删除sudoLite、卸载微信均会使成绩数据清空。在未来版本，将提供上传同步“生涯统计”的功能。
   </view>
   <view class='hdBar'>
     <text class='title'>用户信息与隐私说明</text>
   </view>
   <view class='bdContent'>
-    由于微信小程序严格的限制，sudoLite现在、将来不会在未经您本人允许的情况下获取您任何信息，请放心使用。
+    由于微信小程序严格的限制，sudoLite现在、将来不会在未经您允许的情况下获取任何信息，请放心使用。
   </view>
   <view class='hdBar'>
     <text class='title'>Bug、建议与反馈</text>
   </view>
   <view class='bdContent'>
     <view>Email:
-      <text class='link' bindtap='copy' data-type="email">sudo@Lite.Fun</text>
+      <text class='link' bindtap='copy' data-type="email">hellowd93@163.com</text>
     </view>
     <view>Repo:
-      <text class='link' bindtap='copy' data-type="github">https://github.com/Pysics/sudoLite</text>
+      <text class='link' bindtap='copy' data-type="github">https://github.com/17forever/sudoLite/</text>
     </view>
   </view>
   <view class='hdBar'>
@@ -42,7 +42,7 @@
     <view>License: MIT</view>
   </view>
   <view class='footer'>
-    <view>sudoLite v1.1.2</view>
+    <view>sudoLite v1.1.3</view>
     <!-- <text>© </text> -->
     <view>© 2017{{currentYear}} Lite Time,
       <text bindtap='copy' class='link' data-type="website">Lite.Fun</text>

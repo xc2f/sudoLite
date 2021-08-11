@@ -25,9 +25,11 @@
       统计</view>
     <!-- </navigator> -->
     <!-- <navigator url="/pages/rank/index"> -->
+    <!--
       <view class='row' bindtap='route' data-type='rank' hover-class='hover' hover-start-time='0' hover-stay-time='170'>
       <image src='/images/ic_equalizer_black_24dp_2x.png'></image>
       排行</view>
+    -->
     <!-- </navigator> -->
     <!-- <navigator url="/pages/setting/index"> -->
       <view class='row' bindtap='route' data-type='setting' hover-class='hover' hover-start-time='0' hover-stay-time='170'>
@@ -62,6 +64,7 @@
       </view>
     </view>
 
+    <view class='content'>
     <view class='top baseBgColor' style='height: {{sideSize - 5}}px;'>
       <view class="{{drawerToggle ? 'menu menuToLeft' : 'menu'}}" bindtap='menuAnimate' animation="{{menuAnimation}}">
         <text animation="{{menuAnimationTop}}"></text>
@@ -111,7 +114,7 @@
         <scroll-view scroll-y class='scroll' wx:if="{{init}}" scroll-into-view="{{toView}}" scroll-with-animation wx:if="{{!complete}}">
           <view class='wrap'>
             <view class='item' wx:for="{{leave}}" wx:key="item*this" wx:for-index="idx">
-              <view wx:if="{{item}}" style='height: {{(sideSize - 5)/3}}px; line-height: {{(sideSize - 5)/3}}px' id="view{{idx}}" data-idx="{{idx}}" catchtap='tapRowToShowSame'>
+              <view wx:if="{{item}}" style='height: {{(sideSize - 5)/5}}px; line-height: {{(sideSize - 5)/5}}px' id="view{{idx}}" data-idx="{{idx}}" catchtap='tapRowToShowSame'>
                 <view class='index'>{{idx+1}}</view>
                 <view class="{{item>0 ? 'imgs' : 'imgs sgmi'}}">
                   <image wx:for="{{item > 0 ? item : -item}}" wx:key="item*this" src="/images/{{idx+1}}.jpg"></image>
@@ -135,6 +138,7 @@
 
         <button wx:if="{{complete && !showResult}}" class='reGenerate' bindtap='handleGenerateSudoku' disabled="{{btnDisabled}}" style="line-height:{{sideSize - 5}}px">重新生成</button>
       </view>
+    </view>
     </view>
 
     <!-- // body -->

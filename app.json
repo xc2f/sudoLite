@@ -1,5 +1,5 @@
 {
-  "pages":[
+  "pages": [
     "pages/index/index",
     "pages/record/index",
     "pages/setting/index",
@@ -7,11 +7,12 @@
     "pages/about/index",
     "pages/components/loading/loading"
   ],
-  "window":{
+  "window": {
     "navigationBarTitleText": "sudoLite",
-    "navigationBarTextStyle": "light",
+    "navigationBarTextStyle": "white",
     "navigationBarBackgroundColor": "#ffc107",
-    "backgroundTextStyle":"dark",
+    "backgroundTextStyle": "dark",
     "backgroundColor": "#fff"
-  }
+  },
+  "sitemapLocation": "sitemap.json"
 }

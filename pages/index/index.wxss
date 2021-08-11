@@ -1,4 +1,5 @@
-page, .container {
+page,
+.container {
   /* position: relative;
   width: 100%;
   height: 100vh; */
@@ -11,7 +12,7 @@ page, .container {
   height: 100%;
   display: flex;
   flex-direction: column;
-  /* justify-content: center; *//* align-items: center; */
+  /* justify-content: center; */ /* align-items: center; */
 }
 
 .body .shadow {
@@ -22,6 +23,11 @@ page, .container {
   left: 0;
   background: rgba(0, 0, 0, 0.3);
   z-index: 2;
+}
+
+.body .content {
+  display: flex;
+  flex-direction: column;
 }
 
 .body .top {
@@ -41,23 +47,25 @@ page, .container {
 
 .box {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #777;
-  background: #eee;
-  /* borderradius对手机布局有影响 *//* border-radius: 2px; */
+  background: #fafafa;
+  /* borderradius对手机布局有影响 */ /* border-radius: 2px; */
   position: relative;
-  border-right: 1px dashed #ddd;
-  border-bottom: 1px dashed #ddd;
+  border-right: 1px dashed #eee;
+  border-bottom: 1px dashed #eee;
+  font-size: 24px;
 }
 
 .box.blank {
   color: #5cb85c;
 }
 
-.box .rcl, .box .showSame, .box .cbg {
+.box .rcl,
+.box .showSame,
+.box .cbg {
   position: absolute;
   top: 0;
   right: 0;
@@ -68,7 +76,7 @@ page, .container {
 }
 
 .box .rcl {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.07);
 }
 
 .box.duplicate {
@@ -77,12 +85,12 @@ page, .container {
 
 .box .showSame {
   /* color: #f0ad4e; */
-  background: rgba(255, 193, 7, 0.3);
+  background: rgba(255, 193, 7, 0.1);
 }
 
 .box .cbg {
   transform: scale(0);
-  background: rgba(255, 193, 7, 0.3);
+  background: rgba(255, 193, 7, 0.1);
 }
 
 .row {
@@ -93,11 +101,11 @@ page, .container {
 }
 
 .row:nth-child(1) {
-  /* border-top: 2px solid #ddd; */
+  /* border-top: 2px solid #eee; */
 }
 
 .row:nth-child(3n) {
-  border-bottom: 2px solid #ddd;
+  border-bottom: 2px solid #eee;
 }
 
 .row:last-child {
@@ -105,11 +113,11 @@ page, .container {
 }
 
 .row .box:first-child {
-  /* border-left: 2px solid #ddd; */
+  /* border-left: 2px solid #eee; */
 }
 
 .row .box:nth-child(3n) {
-  border-right: 2px solid #ddd;
+  border-right: 2px solid #eee;
 }
 
 .row .box:last-child {
@@ -183,8 +191,8 @@ page, .container {
 }
 
 .panel {
-  width: 102px;
-  height: 102px;
+  width: 132px;
+  height: 132px;
   /* border: 1px solid red; */
   text-align: center;
   position: absolute;
@@ -194,17 +202,18 @@ page, .container {
 }
 
 .panel > view {
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
   /* border: 1px solid blue; */
   color: #777;
-  /* background: rgba(0, 0, 0, 0.2); */
+  /* background: rgba(0, 0, 0, 0.1); */
   background: #fff;
   float: left;
   /* margin, padding, border都算在width内 */
   margin: 2px;
   font-weight: bold;
+  font-size: 20px;
 }
 
 .panel .hover {
@@ -234,8 +243,8 @@ page, .container {
 }
 
 .pause text {
-  width: 4px;
-  height: 16px;
+  width: 5px;
+  height: 20px;
   background: #fff;
   display: block;
   margin: 2px;
@@ -270,7 +279,7 @@ page, .container {
   bottom: 10px;
   width: 0;
   height: 0;
-  border-width: 8px;
+  border-width: 10px;
   border-top-color: transparent;
   border-right-color: transparent;
   border-bottom-color: transparent;
@@ -299,15 +308,16 @@ page, .container {
 
 .menu text {
   /* width: 20px; */
-  height: 2px;
+  height: 4px;
   background: #fff;
   display: block;
   margin: 4px;
   border-radius: 3px;
 }
 
-.menu text:first-child, .menu text:last-child {
-  width: 20px;
+.menu text:first-child,
+.menu text:last-child {
+  width: 24px;
 }
 
 .menu text:nth-child(2) {
@@ -341,7 +351,7 @@ page, .container {
 .container .drawer .top movable-area {
   width: 100%;
   height: 100%;
-  left: 50%;
+  left: 0;
 }
 
 .container .drawer .top movable-view {
@@ -371,7 +381,7 @@ page, .container {
 }
 
 .container .drawer .row.hover {
-  /* background: rgba(255, 193, 7, .3) */
+  /* background: rgba(255, 193, 7, .2) */
   background: #eee;
 }
 
@@ -390,12 +400,12 @@ page, .container {
 .bottom .info.result {
   margin-top: -2px;
   height: calc(100% + 2px);
-  border-top: 2px solid #ddd;
+  border-top: 2px solid #eee;
   width: 100%;
 }
 
 .scroll {
-  /* border: 1px solid #ddd; */
+  /* border: 1px solid #eee; */
   position: absolute;
   left: 0;
   right: 0;
@@ -414,22 +424,23 @@ page, .container {
 }
 
 .scroll .item .index {
-  flex: 1.5;
-  background: rgba(255, 193, 7, 0.3);
-  color: #bbb;
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  flex: 1;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  background: #f7f7f7;
 }
 
 .scroll .imgs {
-  flex: 7;
+  flex: 8;
   text-align: left;
   line-height: 30px;
-  border-bottom: 1px dashed #ddd;
+  border-bottom: 1px dashed #eee;
   overflow: hidden;
-  display: block;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding-left: 5px;
 }
 
 /* 负数 */
@@ -439,9 +450,9 @@ page, .container {
 }
 
 .scroll .counts {
-  flex: 1.5;
-  border-left: 1px dashed #ddd;
-  border-bottom: 1px dashed #ddd;
+  flex: 1;
+  border-left: 1px dashed #eee;
+  border-bottom: 1px dashed #eee;
   font-weight: bold;
 }
 
@@ -480,6 +491,10 @@ page, .container {
   border-radius: 2px;
   box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.3);
   color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
 }
 
 .reGenerate {
