@@ -43,10 +43,15 @@ text.link {
   background: #eee;
   margin: 0 -10px;
   padding: 10px;
-  /* font-size: 17px; *//* border-radius: 2px; */
+  /* font-size: 17px; */
+  /* border-radius: 2px; */
 }
 
 .container .tip.bdContent:first-child {
   text-indent: 0;
   /* margin-top: 10px; */
+}
+
+.custer-service {
+  margin: 10px 10px -10px 15px;
 }

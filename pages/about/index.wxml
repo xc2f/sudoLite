@@ -27,6 +27,7 @@
   <view class='hdBar'>
     <text class='title'>Bug、建议与反馈</text>
   </view>
+  <button  open-type="contact" type="primary" size="mini" plain class='custer-service'>联系客服</button>
   <view class='bdContent'>
     <view>Email:
       <text class='link' bindtap='copy' data-type="email">hellowd93@163.com</text>

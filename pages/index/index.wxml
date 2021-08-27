@@ -46,7 +46,7 @@
   <view class="body">
     <view class='shadow' wx:if="{{drawerToggle}}" bindtap='closeDrawer'></view>
     <!-- 浮层 -->
-    <view class='panel' style="top: {{panelPosition.dy}}px; left: {{panelPosition.dx}}px;" animation="{{panelShowAnimation}}">
+    <view class='panel' wx:if="{{generateOk}}" style="top: {{panelPosition.dy}}px; left: {{panelPosition.dx}}px;" animation="{{panelShowAnimation}}">
       <block wx:for="{{panelData}}" wx:key="item*this">
         <view catchtap='panelTap' data-value="{{item}}" hover-class='hover' hover-start-time='0'>{{item}}</view>
       </block>
